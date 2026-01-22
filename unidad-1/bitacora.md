@@ -157,6 +157,68 @@ function draw() {
   circle(x + d, y + d, s);
 }
 
+```
+
+### Actividad 5
+
+<img width="1918" height="890" alt="image" src="https://github.com/user-attachments/assets/76c425c8-d561-4595-a2c7-8a19acc93b04" />
+
+
+``` js
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+let x;
+let y;
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+
+  x = width / 2;
+  y = height / 2;
+}
+
+function draw() {
+  noStroke();
+  fill(random(255), random(255), random(255), 20);
+
+  let d = 20;
+  let s = 12;
+
+  square(x, y, s);
+
+  square(x, y - d, s);
+  square(x, y + d, s);
+
+  circle(x - d, y, s);
+  circle(x + d, y, s);
+
+  circle(x - d, y - d, s);
+  circle(x + d, y - d, s);
+  circle(x - d, y + d, s);
+  circle(x + d, y + d, s);
+
+  let r = random(1);
+  let xstep, ystep;
+
+  if (r < 0.01) {
+    // 1% de probabilidad de salto grande
+    xstep = random(-100, 100);
+    ystep = random(-100, 100);
+  } else {
+    // movimiento pequeño la mayor parte del tiempo
+    xstep = random(-2, 2);
+    ystep = random(-2, 2);
+  }
+
+  x += xstep;
+  y += ystep;
+
+  // mantener dentro del canvas
+  x = constrain(x, 0, width);
+  y = constrain(y, 0, height);
+}
 
 
 ```
@@ -165,6 +227,7 @@ function draw() {
 
 
 ## Bitácora de reflexión
+
 
 
 
