@@ -8,6 +8,59 @@
 
 ### Actividad 2
 
+Código modificado: 
+
+```
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+let walker;
+
+function setup() {
+  createCanvas(640, 240);
+  walker = new Walker();
+  walker2 = new Walker();
+  
+  background(255);
+}
+
+function draw() {
+  walker.step();
+  walker.show();
+  
+  walker2.step();
+  walker2.show();
+  
+  
+}
+
+class Walker {
+  constructor() {
+    this.x = width / 2;
+    this.y = height / 2;
+  }
+
+  show() {
+    stroke(0);
+    circle(this.x, this.y, 50);
+  }
+
+  step() {
+    const choice = floor(random(100));
+    if (choice == 0) {
+      this.x++;
+    } else if (choice == 1) {
+      this.x--;
+    } else if (choice == 2) {
+      this.y++;
+    } else {
+      this.y--;
+    }
+  }
+}
+```
+
 - Una vez modificado el código, cambié la clase walker los valores y en el step el random a 7, esperaba que el punto se moviera de forma más variada e impredecible, ya que estaba aumentando el rango de valores aleatorios, manteniendo el comportamiento de una caminata aleatoria similar al ejemplo original. Pero en cambio solo cambió la dirección a la que iba que fue hacia arriba, siempre que lo ejecuto desde que hice los cambios solo va hacia arriba.
 
 - No ocurrió exactamente lo que esperaba. Esto creo que sucedió porque al aumentar el rango de valores aleatorios sin equilibrar las condiciones.
@@ -49,5 +102,6 @@ function draw() {
 
 
 ## Bitácora de reflexión
+
 
 
