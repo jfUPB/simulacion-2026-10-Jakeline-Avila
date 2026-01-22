@@ -122,11 +122,47 @@ class Walker {
 
 ### Actividad 4
 
+``` js
+// The Nature of Code
+// Daniel Shiffman
+// http://natureofcode.com
+
+function setup() {
+  createCanvas(640, 240);
+  background(255);
+}
+function draw() {
+  //{!1} A normal distribution with mean 320 and standard deviation 60
+  let x = randomGaussian(320, 60);
+  let y = randomGaussian(120, 30);
+
+  noStroke();
+  fill(random(255), random(255), random(255), 20);
+
+  let d = 20;
+  let s = 5;
+
+  
+  square(x, y, s);
+  square(x, y - d, s);
+  square(x, y + d, s);
+  circle(x - d, y, s);
+  circle(x + d, y, s);
+  circle(x - d, y - d, s);
+  circle(x + d, y - d, s);
+  circle(x - d, y + d, s);
+  circle(x + d, y + d, s);
+}
+
+
+
+```
 
 ## Bitácora de aplicación 
 
 
 ## Bitácora de reflexión
+
 
 
 
