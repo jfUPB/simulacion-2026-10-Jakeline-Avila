@@ -122,6 +122,9 @@ class Walker {
 
 ### Actividad 4
 
+<img width="1895" height="834" alt="image" src="https://github.com/user-attachments/assets/36edb5ce-8259-44d8-956a-29bb971d496f" />
+
+
 ``` js
 // The Nature of Code
 // Daniel Shiffman
@@ -162,6 +165,7 @@ function draw() {
 
 
 ## Bitácora de reflexión
+
 
 
 
