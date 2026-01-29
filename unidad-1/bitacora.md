@@ -297,46 +297,66 @@ function draw() {
 ### Actividad 7
 
 https://editor.p5js.org/Jakeline-Avila/sketches/u9AM8Q_zK
-``` js
-let brushes = [];
-let currentBrush;
 
-let x, y;          // posición
-let xoff = 0;      // Perlin Noise offsets
+- Esta obra es un lyric video generativo donde el texto de la canción se convierte en el principal elemento visual y se comporta como un sistema dinámico. Las palabras no siguen una animación predefinida, sino que se mueven y transforman en tiempo real mediante la combinación de ruido Perlin, aleatoriedad y saltos tipo Lévy flight.
+``` js
+// Actividad 07 – Obra generativa
+// Lyric video generativo con Lévy flight, Perlin Noise y aleatoriedad
+
+let lyrics = [
+  "Caramelldansen",
+  "U-u-u-yeah!",
+  "Ooh ooh ooh ah ah",
+  "So dance on and on",
+  "Dum dee dum"
+];
+
+let currentWord = 0;
+
+// posición del texto
+let x, y;
+
+// offsets para Perlin Noise
+let xoff = 0;
 let yoff = 1000;
 
-function preload() {
-  // Cargar imágenes como pinceles (sube tus imágenes a Assets)
-  brushes.push(loadImage('0.png'));
-  brushes.push(loadImage('Dimitri.png'));
-  brushes.push(loadImage('Dimitri2.jpg'));
-  brushes.push(loadImage('Dimitri3.jpg'));
-  
-  // El primer pincel inicial
-  currentBrush = brushes[0];
-}
+// modo caos (fondo tipo epilepsia)
+let chaosMode = true;
 
 function setup() {
   createCanvas(640, 360);
-  background(random(255));      
-  imageMode(CENTER);
-  
-  // posición inicial al centro
+  background(0);
+  textAlign(CENTER, CENTER);
+  rectMode(CENTER);
+
   x = width / 2;
   y = height / 2;
 }
 
 function draw() {
-  // movimiento Lévy flight + Perlin Noise
+  // FONDO
+  if (chaosMode) {
+    background(
+      random(255),
+      random(255),
+      random(255),
+      120
+    );
+  } else {
+    background(0, 20); // modo acumulativo
+  }
+
+  // MOVIMIENTO: Perlin + Lévy flight
   let r = random(1);
   let xstep, ystep;
 
-  if (r < 0.01) {
-    // salto grande ocasional
-    xstep = random(-100, 100);
-    ystep = random(-100, 100);
+  if (r < 0.02) {
+    // Lévy flight → salto brusco + cambio de palabra
+    xstep = random(-200, 200);
+    ystep = random(-120, 120);
+    currentWord = (currentWord + 1) % lyrics.length;
   } else {
-    // movimiento suave con Perlin Noise
+    // Movimiento fluido con ruido Perlin
     let nx = noise(xoff);
     let ny = noise(yoff);
 
@@ -354,28 +374,42 @@ function draw() {
   x = constrain(x, 0, width);
   y = constrain(y, 0, height);
 
-  // rotación aleatoria suave
+  // DIBUJO DEL TEXTO
   push();
   translate(x, y);
-  rotate(map(noise(xoff), 0, 1, -PI/6, PI/6));
-  
-  // tamaño aleatorio para más efecto generativo
-  let size = random(30, 60);
-  
-  // dibujar el pincel actual
-  image(currentBrush, 0, 0, size, size);
+  rotate(random(-0.2, 0.2));
+
+  let txtSize = map(mouseX, 0, width, 24, 72);
+  textSize(txtSize);
+
+  fill(
+    random(255),
+    random(255),
+    random(255),
+    180
+  );
+
+  text(lyrics[currentWord], 0, 0);
   pop();
 }
 
-// Cambiar pincel cuando se presiona cualquier tecla
+// INTERACCIÓN
+function mousePressed() {
+  // Forzar salto tipo Lévy
+  x += random(-250, 250);
+  y += random(-150, 150);
+}
+
 function keyPressed() {
-  currentBrush = random(brushes);
+  // Activar / desactivar caos visual
+  chaosMode = !chaosMode;
 }
 
 ```
 
 
 ## Bitácora de reflexión
+
 
 
 
