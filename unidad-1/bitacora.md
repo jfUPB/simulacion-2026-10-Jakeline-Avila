@@ -122,6 +122,8 @@ class Walker {
 
 ### Actividad 4
 
+https://editor.p5js.org/Jakeline-Avila/sketches/vczshUJTb
+
 <img width="1895" height="834" alt="image" src="https://github.com/user-attachments/assets/36edb5ce-8259-44d8-956a-29bb971d496f" />
 
 
@@ -161,6 +163,7 @@ function draw() {
 
 ### Actividad 5
 
+https://editor.p5js.org/Jakeline-Avila/sketches/h4cZb34vs
 <img width="1918" height="890" alt="image" src="https://github.com/user-attachments/assets/76c425c8-d561-4595-a2c7-8a19acc93b04" />
 
 
@@ -224,7 +227,7 @@ function draw() {
 ```
 
 ### Actividad 6
-
+https://editor.p5js.org/Jakeline-Avila/sketches/5MZu_Yvbo
 
 <img width="1764" height="762" alt="image" src="https://github.com/user-attachments/assets/ec63bd9d-720e-498e-bcb3-c056d4dc7e04" />
 
@@ -291,6 +294,7 @@ function draw() {
 ## Bitácora de aplicación 
 ### Actividad 7
 
+https://editor.p5js.org/Jakeline-Avila/sketches/u9AM8Q_zK
 ``` js
 let brushes = [];
 let currentBrush;
@@ -370,6 +374,7 @@ function keyPressed() {
 
 
 ## Bitácora de reflexión
+
 
 
 
