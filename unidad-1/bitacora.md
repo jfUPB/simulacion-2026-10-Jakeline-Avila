@@ -410,6 +410,39 @@ function keyPressed() {
 
 ## Bitácora de reflexión
 
+### Actividad 8
+
+
+
+// Describe la diferencia fundamental entre la aleatoriedad generada por random() y la apariencia de aleatoriedad del Ruido Perlin (noise()). ¿En qué tipo de situación usarías cada una?
+
+- Describe la diferencia fundamental entre la aleatoriedad generada por random() y la apariencia de aleatoriedad del Ruido Perlin (noise()). ¿En qué tipo de situación usarías cada una?
+
+R/= La diferencia más importante es que random() genera valores completamente independientes, mientras que noise() genera valores correlacionados entre sí. ¿Cómo así? pues basicamente random cada número no tiene relación con el anterior y ruido perlin da apariencia de aletoriedad, pero en realidad los valores cambian de forma suave y continua.
+
+Cuando usaría cada uni? Usaría random cuando quiero sorpresa, irregularidad o caos, como posiciones totalmente dispersas y noise cuando quiero movimientos mas naturales como desplazamientos suaves.
+
+// Explica con tus palabras qué es una distribución de probabilidad. ¿Qué diferencia visual produce una caminata aleatoria con una distribución uniforme versus una con una distribución normal?
+
+- Explica con tus palabras qué es una distribución de probabilidad. ¿Qué diferencia visual produce una caminata aleatoria con una distribución uniforme versus una con una distribución normal?
+
+R/= Una distribución de probabilidad describe qué tan probable es que ocurran ciertos valores dentro de un conjunto de posibilidades. La diferencia visual entre ambas caminatas es que la distribución uniforme todos los pasos tienen la misma probabilidad mientras que la normal los pasos pequeños son más frecuentes que los grandes, el movimiento se concentra alrededor de una zona y se ve más suave y natural.
+
+- ¿Cuál es el papel de la aleatoriedad en el arte generativo? Menciona al menos dos funciones distintas que cumple
+
+R/= Es clave debido a que introduce variación, cada ejecución de la obra puede producir un resultado distinto aunque el código sea el mismo. También permite exploración de parte del artista podiendo jugar con el algoritmo.
+
+- Piensa en tu obra final (Actividad 07). Describe uno de los conceptos de aleatoriedad que usaste y explica por qué fue una elección adecuada para lograr el efecto que buscabas.
+
+R/= En mi obra utilicé una combinación de Ruido Perlin y Lévy flight. El Ruido Perlin controla el movimiento suave del texto, haciendo que se desplace de forma continua y orgánica. De manera ocasional, se activa un salto tipo Lévy flight, que produce desplazamientos bruscos y cambia la palabra mostrada.
+
+Esta elección fue adecuada porque genera un contraste entre estabilidad y sorpresa. Además, el uso de random() en el color, la rotación y el fondo aporta energía visual y refuerza el carácter caótico del lyric video.
+
+- ¿Qué es un “paseo” o “caminata” (walk) en el contexto de la simulación? ¿Qué característica particular tiene una caminata de tipo “Lévy flight”?
+
+R/= Un paseo o caminata (walk) en simulación es un proceso donde un objeto se mueve paso a paso, y cada nueva posición depende de la anterior, normalmente usando reglas aleatorias.
+
+Una caminata tipo Lévy flight se caracteriza porque combina muchos pasos pequeños con saltos grandes ocasionales, lo que produce movimientos impredecibles pero con patrones.
 
 
 
