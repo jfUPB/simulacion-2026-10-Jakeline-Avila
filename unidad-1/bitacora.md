@@ -165,7 +165,7 @@ function draw() {
 
 https://editor.p5js.org/Jakeline-Avila/sketches/h4cZb34vs
 <img width="1918" height="890" alt="image" src="https://github.com/user-attachments/assets/76c425c8-d561-4595-a2c7-8a19acc93b04" />
-
+- En este sketch se utiliza la técnica de Lévy flight para controlar el movimiento de las figuras, combinando desplazamientos pequeños la mayor parte del tiempo con saltos grandes ocasionales. Esta distribución permite simular un movimiento más natural y menos predecible que una caminata aleatoria uniforme, ya que genera zonas de acumulación visual interrumpidas por cambios bruscos de posición. El resultado esperado es un comportamiento dinámico y orgánico, donde el patrón se construye de manera irregular, aportando mayor riqueza visual y sensación de exploración dentro del canvas.
 
 ``` js
 // The Nature of Code
@@ -374,6 +374,7 @@ function keyPressed() {
 
 
 ## Bitácora de reflexión
+
 
 
 
