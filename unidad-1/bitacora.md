@@ -231,6 +231,8 @@ https://editor.p5js.org/Jakeline-Avila/sketches/5MZu_Yvbo
 
 <img width="1764" height="762" alt="image" src="https://github.com/user-attachments/assets/ec63bd9d-720e-498e-bcb3-c056d4dc7e04" />
 
+- En este sketch se utiliza ruido Perlin para generar un movimiento continuo y suave, a diferencia del ruido aleatorio que produce cambios bruscos e impredecibles. El ruido Perlin permite que los valores varíen de forma gradual en el tiempo, lo que se traduce en trayectorias más orgánicas y naturales dentro del canvas. En esta visualización, el Perlin noise controla los desplazamientos pequeños del objeto, creando fluidez y coherencia en el movimiento, mientras que los saltos ocasionales rompen ligeramente esa continuidad. El resultado esperado es un patrón visual más armónico, con transiciones suaves y una sensación de movimiento constante, similar a fenómenos naturales como corrientes, viento o desplazamientos orgánicos.
+- 
 ``` js
 let x;
 let y;
@@ -374,6 +376,7 @@ function keyPressed() {
 
 
 ## Bitácora de reflexión
+
 
 
 
