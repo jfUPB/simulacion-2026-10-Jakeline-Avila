@@ -57,10 +57,31 @@ class Walker {
 ```
 
 ### Actividad 4
+- ¿Qué resultado esperas obtener en el programa anterior?
 
+R/= Que solamente se juegue con el vector.
+
+- ¿Qué resultado obtuviste?
+
+R/= El vector sí cambia pero pasa por referencia que es basicamente enviar una referencia del objeto a la memoria.
+
+- Recuerda los conceptos de paso por valor y paso por referencia en programación.
+
+R/=
+- Paso por valor: Se copia el dato. Cambios dentro de la función no afectan al original.
+- Paso por referencia: Se pasa una referencia al mismo objeto en memoria. Cambios dentro de la función sí afectan al original.
+
+- ¿Qué tipo de paso se está realizando en el código?
+
+R/= Paso por referencia, está modificando directamente position.
+
+- ¿Qué aprendiste?
+
+R/= Un p5.Vector puede ser modificado desde cualquier función que lo reciba.
 
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
