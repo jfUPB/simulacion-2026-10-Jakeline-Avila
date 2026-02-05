@@ -135,10 +135,29 @@ function drawArrow(base, vec, myColor) {
 
 ```
 
+### Actividad 7
+
+1. Cuál es el concepto del marco motion 101 y cómo se interpreta geométricamente.
+
+R/= Motion 101 es un marco conceptual básico para describir el movimiento usando vectores. La idea central es que el movimiento se puede entender como la evolución de la posición de una partícula en el tiempo, y esa evolución se construye a partir de tres ingredientes fundamentales:
+
+- Posición inicial
+
+- Velocidad
+
+- Aceleración
+
+2. ¿Cómo se aplica motion 101 en el ejemplo?
+
+R/= En el marco Motion 101, el movimiento se describe de forma básica mediante vectores, donde la posición de un objeto cambia al sumar su velocidad en cada instante de tiempo. En el ejemplo, el objeto Mover tiene un vector posición y un vector velocidad, y en cada frame la nueva posición se calcula con la instrucción this.position.add(this.velocity), lo que representa directamente el principio de Motion 101.
+
+### Actividad 8
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
