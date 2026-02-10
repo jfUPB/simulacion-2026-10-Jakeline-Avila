@@ -152,11 +152,120 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
 
 ### Actividad 8
 
+``` js
+let anchor;
+let position;
+let velocity;
+let acceleration;
+
+let restLength = 220;   // longitud de la cuerda
+let k = 0.01;           // rigidez del resorte
+let damping = 0.98;
+
+let drops = [];
+
+function setup() {
+  createCanvas(600, 600);
+  background(255);
+
+  anchor = createVector(width / 2, 40);
+  position = createVector(width / 2 + 100, 300);
+  velocity = createVector(0, 0);
+  acceleration = createVector(0, 0);
+}
+
+function draw() {
+  background(255, 30); // Fondo blanco con transparencia para efecto “fade” suave
+
+  acceleration.mult(0); // Resetear fuerzas
+
+  // -------- FUERZA DE CUERDA (SPRING) --------
+  let force = p5.Vector.sub(position, anchor);
+  let distance = force.mag();
+
+  let stretch = distance - restLength;
+  force.normalize();
+  force.mult(-1 * k * stretch);
+
+  acceleration.add(force);
+
+  // -------- GRAVEDAD --------
+  let gravity = createVector(0, 0.1);
+  acceleration.add(gravity);
+
+  // -------- ATRACCIÓN AL MOUSE --------
+  let mouse = createVector(mouseX, mouseY);
+  let mouseForce = p5.Vector.sub(mouse, position);
+
+  let d = constrain(mouseForce.mag(), 20, 300);
+  mouseForce.normalize();
+
+  let strength = map(d, 20, 300, 0.05, 0.005);
+  mouseForce.mult(strength);
+
+  acceleration.add(mouseForce);
+
+  // -------- MOTION 101 --------
+  velocity.add(acceleration);
+  velocity.mult(damping);
+  position.add(velocity);
+
+  // -------- DIBUJO CUERDA --------
+  stroke(0, 30);
+  line(anchor.x, anchor.y, position.x, position.y);
+
+  // -------- CUBETA (partícula principal) --------
+  noStroke();
+  fill(0);
+  circle(position.x, position.y, 14);
+
+  // -------- GENERAR GOTAS DE PINTURA --------
+  if (frameCount % 2 === 0) {
+    drops.push(new Drop(position.x, position.y));
+  }
+
+  // -------- ACTUALIZAR Y MOSTRAR GOTAS --------
+  for (let d of drops) {
+    d.update();
+    d.show();
+  }
+}
+
+function mousePressed() {
+  position.set(mouseX, mouseY);
+  velocity.set(0, 0);
+}
+
+// -------- CLASE DROP --------
+class Drop {
+  constructor(x, y) {
+    this.position = createVector(x, y);
+    this.velocity = createVector(random(-0.4, 0.4), random(1, 2));
+    this.acceleration = createVector(0, 0.06);
+    this.life = 255;
+  }
+
+  update() {
+    this.velocity.add(this.acceleration);
+    this.position.add(this.velocity);
+    this.life -= 2;
+  }
+
+  show() {
+    noStroke();
+    fill(0, 18);
+    circle(this.position.x, this.position.y, 4);
+  }
+}
+
+```
+
 ## Bitácora de aplicación 
 
 
 
 ## Bitácora de reflexión
+
 
 
 
