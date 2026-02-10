@@ -92,45 +92,44 @@ Ahora el mismo periodista curioso de antes te pregunta si le puedes dar una intu
 ### Actividad 6
 
 ``` js
+let u = 0;
+let velocito = 0.01;
+let palla = 1;
+
 function setup() {
-    createCanvas(800, 800);
+  createCanvas(400, 400);
 }
 
 function draw() {
-    background(200);
-    
-    let lerp =   
+  background(200);
   
-    let v0 = createVector(50, 50);
-    let v1 = createVector(700, 0);
-    let v0c = p5.Vector.add(v0,v1);
-    let v2 = createVector(0, 700);
-    let v3 = p5.Vector.lerp(v1, v2, 0.5);
-    let vC = p5.Vector.sub(v2, v1); // C = A - B
+  let v0 = createVector(50, 50);
+  let v1 = createVector(300, 0);
+  let v2 = createVector(0, 300);
 
-    drawArrow(v0, v1, 'red');
-    drawArrow(v0, v2, 'blue');
-    drawArrow(v0, v3, 'purple');
-    drawArrow(v0c, vC, 'green');
-    
-  
-  
-    
-  
+  u += velocito * palla;
+  if (u >= 1 || u <= 0) palla *= -1;
+
+  let movingPoint = p5.Vector.lerp(v1, v2, u);
+
+  drawArrow(v0, v1, "red");
+  drawArrow(v0, v2, "blue");
+  drawArrow(v0, movingPoint, "purple");
+  drawArrow(p5.Vector.add(v0, v1), p5.Vector.sub(v2, v1), "green");
 }
 
 function drawArrow(base, vec, myColor) {
-    push();
-    stroke(myColor);
-    strokeWeight(3);
-    fill(myColor);
-    translate(base.x, base.y);
-    line(0, 0, vec.x, vec.y);
-    rotate(vec.heading());
-    let arrowSize = 7;
-    translate(vec.mag() - arrowSize, 0);
-    triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
-    pop();
+  push();
+  stroke(myColor);
+  strokeWeight(3);
+  fill(myColor);
+  translate(base.x, base.y);
+  line(0, 0, vec.x, vec.y);
+  rotate(vec.heading());
+  let arrowSize = 7;
+  translate(vec.mag() - arrowSize, 0);
+  triangle(0, arrowSize / 2, 0, -arrowSize / 2, arrowSize, 0);
+  pop();
 }
 
 ```
@@ -158,6 +157,7 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
 
 
 ## Bitácora de reflexión
+
 
 
 
