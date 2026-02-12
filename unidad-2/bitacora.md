@@ -208,25 +208,25 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
 ## Bitácora de aplicación 
 ### Actividad 9
 
-- 1) Concepto de la obra generativa
+- Concepto de la obra generativa
 
-Mi obra es una pieza generativa en tiempo real donde un “péndulo” (una partícula principal unida a un ancla por una cuerda/resorte) se mueve con física básica y va dejando un rastro de “gotas de tinta/pintura” que caen y se acumulan en el espacio. La idea es mezclar un comportamiento controlado (tensión del resorte + gravedad) con una fuerza interactiva (atracción al mouse), para que el usuario sienta que está “guiando” el movimiento pero nunca lo controla por completo.
+Mi obra es una pieza generativa en tiempo real donde un “péndulo” (una partícula principal unida a un ancla por una cuerda/resorte) se mueve con física básica y va dejando un rastro de “gotas de tinta/pintura” que caen y se acumulan en el espacio. La idea es mezclar un comportamiento controlado (tensión del resorte + gravedad) con una fuerza interactiva (atracción al mouse), para que el usuario sienta que está “guiando” el movimiento pero nunca lo controla por completo. Me basé bastante en el artista que utiliza una cubeta para hacer sus obras.
 
 - Regla de aceleración aplicada (Motion 101):
 
-La aceleración se calcula como la suma de fuerzas:
+La aceleración la calculo como la suma de fuerzas:
 
 - Fuerza tipo resorte (cuerda elástica hacia el ancla)
 - Gravedad constante hacia abajo
 - Atracción al mouse (dependiente de la distancia)
 
-Luego se aplica Motion 101:
+Luego aplico Motion 101:
 
 - velocity += acceleration
 - position += velocity y un damping para que no se vuelva infinito y se sienta más “orgánico”.
 
 - Por qué lo elegí / qué me evoca:
-Lo pensé como una exploración artística de equilibrio entre orden y caos: la cuerda y la gravedad generan una dinámica “natural”, y el mouse introduce intención humana.
+Lo pensé como una exploración artística de equilibrio entre orden y caos: la cuerda y la gravedad generan una dinámica “natural”, y el mouse introduce intención humana. Además de que todo depende desde el ángulo que se suelta.
 
 ``` js
 let anchor;
@@ -375,6 +375,7 @@ Link: https://editor.p5js.org/Jakeline-Avila/sketches/xIDuxBhzS
 <img width="885" height="923" alt="image" src="https://github.com/user-attachments/assets/e2a6f6dc-1ab9-4cab-ad2e-ef744d0c72ea" />
 
 ## Bitácora de reflexión
+
 
 
 
