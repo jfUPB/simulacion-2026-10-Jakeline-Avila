@@ -1,8 +1,22 @@
 # Unidad 2
 
 ## Bitácora de proceso de aprendizaje
+### Actividad 1
+
+<img width="1107" height="1012" alt="image" src="https://github.com/user-attachments/assets/ace78b90-b3c3-4c4b-9403-69aec7f5b438" />
 
 
+- En esta exploración de artistas que trabajan con vectores, movimiento y animación generativa, el proyecto que más me llamó la atención fue “Beary Bear” de Raven Kwok. Me impactó especialmente la forma en que las partículas construyen la figura del oso a través del movimiento, generando una sensación de vida y fluidez constante.
+
+- Lo que más me gustó fue cómo el desplazamiento de los puntos parece responder a fuerzas invisibles, lo que sugiere el uso de vectores, velocidad y aceleración como parte fundamental de la obra. No se percibe como una animación tradicional, sino como un sistema dinámico donde cada partícula contribuye a la forma general sin perder su autonomía.
+
+- Además, me parece muy interesante la relación entre arte, programación y física que plantea este tipo de trabajos. La obra demuestra cómo conceptos matemáticos pueden convertirse en experiencias visuales poéticas, logrando que la tecnología no solo sea funcional sino también expresiva.
+
+### Actividad 2
+
+- La suma de vectores en p5.js se realiza usando métodos propios del objeto p5.Vector, como add(). En el ejemplo, position.add(velocity); actualiza la posición de la pelota sumando la velocidad en cada frame, es decir, se suman las coordenadas X y Y de ambos vectores para generar el movimiento.
+
+- La línea position = position + velocity; no funciona porque los vectores en p5.js son objetos, no números. El operador + no suma sus componentes, por lo que es necesario usar funciones específicas como add() para realizar correctamente la operación.
 
 ### Actividad 3
 
@@ -81,13 +95,19 @@ R/= Un p5.Vector puede ser modificado desde cualquier función que lo reciba.
 
 ### Actividad 5
 
-¿Para qué sirve el método mag()? Nota que hay otro método llamado magSq(). ¿Cuál es la diferencia entre ambos? ¿Cuál es más eficiente?
-¿Para qué sirve el método normalize()?
-Te encuentras con un periodista en la calle y te pregunta ¿Para qué sirve el método dot()? ¿Qué le responderías en un frase?
-El método dot() tiene una versión estática y una de instancia. ¿Cuál es la diferencia entre ambas?
-Ahora el mismo periodista curioso de antes te pregunta si le puedes dar una intuición geométrica acerca del producto cruz. Entonces te pregunta ¿Cuál es la interpretación geométrica del producto cruz de dos vectores? Tu respuesta debe incluir qué pasa con la orientación y la magnitud del vector resultante.
-¿Para que te puede servir el método dist()?
-¿Para qué sirven los métodos normalize() y limit()?
+- El método mag() sirve para saber qué tan largo es un vector. magSq() hace lo mismo pero sin sacar la raíz cuadrada, por eso es más rápido cuando solo se quiere comparar tamaños.
+
+- El método normalize() sirve para dejar el vector con tamaño 1 pero sin cambiar hacia dónde apunta.
+
+- El método dot() sirve para saber si dos vectores van en la misma dirección o no.
+
+- La diferencia entre el dot() normal y el estático es que uno se usa desde un vector (v1.dot(v2)) y el otro recibe los dos vectores directamente (p5.Vector.dot(v1,v2)).
+
+- El producto cruz da un vector perpendicular a los otros dos; la dirección depende del orden en que los pongas y el tamaño indica qué tan “abiertos” están.
+
+- El método dist() sirve para medir la distancia entre dos puntos o vectores.
+
+- normalize() ayuda a mantener la dirección y limit() sirve para que un vector no se pase de cierta velocidad o tamaño.
 
 ### Actividad 6
 
@@ -134,6 +154,30 @@ function drawArrow(base, vec, myColor) {
 
 ```
 
+- ¿Cómo funciona lerp() y lerpColor()?
+
+- lerp() significa “mezclar” entre dos cosas. En vectores: p5.Vector.lerp(v1, v2, u) te da un punto “entre” v1 y v2.
+
+- Si u = 0 → te da v1
+- Si u = 1 → te da v2
+- Si u = 0.5 → te da justo la mitad
+ Si u va cambiando con el tiempo, ese punto se mueve de v1 a v2 (y si lo haces rebotar, va y vuelve).
+
+lerpColor() hace lo mismo pero con colores: mezcla un color con otro según u.
+
+- u = 0 → color A
+- u = 1 → color B
+- u = 0.5 → mezcla 50/50
+
+- ¿Cómo se dibuja una flecha con drawArrow()?
+
+drawArrow(base, vec, color) dibuja una flecha así:
+Mueve el origen al punto base con translate(base.x, base.y).
+Dibuja la línea principal desde (0,0) hasta (vec.x, vec.y).
+Gira todo para que apunte en la dirección del vector con rotate(vec.heading()).
+Se mueve casi al final de la línea con translate(vec.mag() - arrowSize, 0).
+Dibuja la punta con un triángulo (triangle(...)).
+
 ### Actividad 7
 
 1. Cuál es el concepto del marco motion 101 y cómo se interpreta geométricamente.
@@ -152,6 +196,9 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
 
 ### Actividad 8
 
+
+## Bitácora de aplicación 
+### Actividad 9
 ``` js
 let anchor;
 let position;
@@ -260,11 +307,10 @@ class Drop {
 
 ```
 
-## Bitácora de aplicación 
-
 
 
 ## Bitácora de reflexión
+
 
 
 
