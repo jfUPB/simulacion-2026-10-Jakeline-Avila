@@ -207,48 +207,81 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
   
 ## Bitácora de aplicación 
 ### Actividad 9
+
+- 1) Concepto de la obra generativa
+
+Mi obra es una pieza generativa en tiempo real donde un “péndulo” (una partícula principal unida a un ancla por una cuerda/resorte) se mueve con física básica y va dejando un rastro de “gotas de tinta/pintura” que caen y se acumulan en el espacio. La idea es mezclar un comportamiento controlado (tensión del resorte + gravedad) con una fuerza interactiva (atracción al mouse), para que el usuario sienta que está “guiando” el movimiento pero nunca lo controla por completo.
+
+- Regla de aceleración aplicada (Motion 101):
+
+La aceleración se calcula como la suma de fuerzas:
+
+- Fuerza tipo resorte (cuerda elástica hacia el ancla)
+- Gravedad constante hacia abajo
+- Atracción al mouse (dependiente de la distancia)
+
+Luego se aplica Motion 101:
+
+- velocity += acceleration
+- position += velocity y un damping para que no se vuelva infinito y se sienta más “orgánico”.
+
+- Por qué lo elegí / qué me evoca:
+Lo pensé como una exploración artística de equilibrio entre orden y caos: la cuerda y la gravedad generan una dinámica “natural”, y el mouse introduce intención humana.
+
 ``` js
 let anchor;
 let position;
 let velocity;
 let acceleration;
 
-let restLength = 220;   // longitud de la cuerda
-let k = 0.01;           // rigidez del resorte
+let restLength = 220; // longitud de la cuerda
+let k = 0.01;         // rigidez del resorte
 let damping = 0.98;
 
 let drops = [];
+let trail;            // capa donde SÍ se acumula el rastro
+let fade = 5;         // 5 = borra suave / 0 = no borra (acumula)
 
 function setup() {
   createCanvas(600, 600);
-  background(255);
+
+  // Capa para el rastro (solo gotas)
+  trail = createGraphics(width, height);
+  trail.background(255);
 
   anchor = createVector(width / 2, 40);
   position = createVector(width / 2 + 100, 300);
   velocity = createVector(0, 0);
   acceleration = createVector(0, 0);
+
+  textFont("monospace");
 }
 
 function draw() {
-  background(255, 30); // Fondo blanco con transparencia para efecto “fade” suave
+  // Canvas principal: limpio completo para que la "cubeta" NO deje estela fea
+  background(255);
 
-  acceleration.mult(0); // Resetear fuerzas
+  // Capa trail: se borra según fade (si fade=0, NO borra nada)
+  trail.noStroke();
+  trail.fill(255, fade);
+  trail.rect(0, 0, width, height);
 
-  // -------- FUERZA DE CUERDA (SPRING) --------
+  // Reset fuerzas
+  acceleration.mult(0);
+
+  // -------- FUERZA DE CUERDA (SPRING / HOOKE) --------
   let force = p5.Vector.sub(position, anchor);
   let distance = force.mag();
-
   let stretch = distance - restLength;
+
   force.normalize();
   force.mult(-1 * k * stretch);
-
   acceleration.add(force);
 
   // -------- GRAVEDAD --------
-  let gravity = createVector(0, 0.1);
-  acceleration.add(gravity);
+  acceleration.add(createVector(0, 0.1));
 
-  // -------- ATRACCIÓN AL MOUSE --------
+  // -------- ATRACCIÓN AL MOUSE (más fuerte cerca) --------
   let mouse = createVector(mouseX, mouseY);
   let mouseForce = p5.Vector.sub(mouse, position);
 
@@ -257,7 +290,6 @@ function draw() {
 
   let strength = map(d, 20, 300, 0.05, 0.005);
   mouseForce.mult(strength);
-
   acceleration.add(mouseForce);
 
   // -------- MOTION 101 --------
@@ -265,30 +297,51 @@ function draw() {
   velocity.mult(damping);
   position.add(velocity);
 
-  // -------- DIBUJO CUERDA --------
-  stroke(0, 30);
-  line(anchor.x, anchor.y, position.x, position.y);
-
-  // -------- CUBETA (partícula principal) --------
-  noStroke();
-  fill(0);
-  circle(position.x, position.y, 14);
-
-  // -------- GENERAR GOTAS DE PINTURA --------
+  // -------- GENERAR GOTAS (dibujan en trail) --------
   if (frameCount % 2 === 0) {
     drops.push(new Drop(position.x, position.y));
   }
 
-  // -------- ACTUALIZAR Y MOSTRAR GOTAS --------
-  for (let d of drops) {
-    d.update();
-    d.show();
+  for (let dr of drops) {
+    dr.update();
+    dr.show(trail); // <- dibuja en la capa
   }
+  drops = drops.filter((dr) => dr.life > 0);
+
+  // Pegar la capa sobre el canvas
+  image(trail, 0, 0);
+
+  // -------- DIBUJO CUERDA (sin rastro) --------
+  stroke(0, 40);
+  line(anchor.x, anchor.y, position.x, position.y);
+
+  // -------- CUBETA / PARTÍCULA PRINCIPAL (sin rastro) --------
+  noStroke();
+  fill(0);
+  circle(position.x, position.y, 14);
+
+  // HUD simple
+  noStroke();
+  fill(0);
+  text("B: toggle fade | fade=" + fade + "  (0=acumula)", 10, 20);
 }
 
 function mousePressed() {
   position.set(mouseX, mouseY);
   velocity.set(0, 0);
+}
+
+function keyPressed() {
+  // Toggle entre rastro suave y acumulación total
+  if (key === "b" || key === "B") {
+    fade = (fade === 0) ? 5 : 0;
+  }
+
+  // (Opcional) limpiar todo con 'c'
+  if (key === "c" || key === "C") {
+    trail.background(255);
+    drops = [];
+  }
 }
 
 // -------- CLASE DROP --------
@@ -297,7 +350,7 @@ class Drop {
     this.position = createVector(x, y);
     this.velocity = createVector(random(-0.4, 0.4), random(1, 2));
     this.acceleration = createVector(0, 0.06);
-    this.life = 255;
+    this.life = 180; // se usa como opacidad (más vida = más visible)
   }
 
   update() {
@@ -306,18 +359,23 @@ class Drop {
     this.life -= 2;
   }
 
-  show() {
-    noStroke();
-    fill(0, 18);
-    circle(this.position.x, this.position.y, 4);
+  show(layer) {
+    layer.noStroke();
+    layer.fill(0, this.life);          // se desvanece con la vida
+    layer.circle(this.position.x, this.position.y, 5);
   }
 }
 
 ```
+Link: https://editor.p5js.org/Jakeline-Avila/sketches/xIDuxBhzS
 
-
+<img width="904" height="936" alt="image" src="https://github.com/user-attachments/assets/bb75d804-fa82-41d6-ab6d-9417ae93a038" />
+<img width="808" height="753" alt="image" src="https://github.com/user-attachments/assets/f56b3539-79df-4d9d-935b-b8cd9cea13a6" />
+<img width="849" height="896" alt="image" src="https://github.com/user-attachments/assets/ae4b44de-a23b-4a8f-b953-b7f021c845a9" />
+<img width="885" height="923" alt="image" src="https://github.com/user-attachments/assets/e2a6f6dc-1ab9-4cab-ad2e-ef744d0c72ea" />
 
 ## Bitácora de reflexión
+
 
 
 
