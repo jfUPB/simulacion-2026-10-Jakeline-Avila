@@ -196,7 +196,15 @@ R/= En el marco Motion 101, el movimiento se describe de forma básica mediante 
 
 ### Actividad 8
 
+- Cuando probé aceleración constante, el movimiento se volvió cada vez más rápido en la misma dirección. Se siente como si el objeto tuviera un impulso fijo que lo empuja todo el tiempo.
 
+- Con aceleración aleatoria, el movimiento fue impredecible y más orgánico. El objeto cambia de dirección constantemente, dando la sensación de algo más natural o caótico.
+
+- Cuando usé aceleración hacia el mouse, el objeto parecía “perseguir” el cursor. Se genera un efecto interactivo interesante porque el movimiento responde directamente a mi posición, haciendo que el sistema se sienta vivo.
+
+- En general entendí que la aceleración es clave porque define cómo cambia el movimiento; dependiendo de cómo se calcule, el comportamiento puede verse ordenado, caótico o interactivo
+
+  
 ## Bitácora de aplicación 
 ### Actividad 9
 ``` js
@@ -310,6 +318,7 @@ class Drop {
 
 
 ## Bitácora de reflexión
+
 
 
 
