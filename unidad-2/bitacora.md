@@ -376,7 +376,158 @@ Link: https://editor.p5js.org/Jakeline-Avila/sketches/xIDuxBhzS
 
 ## Bitácora de reflexión
 
+### Actividad 10
 
+- Mi obra generativa simula partículas que se agrupan alrededor de centros invisibles, inspirada en Jared Tarbell y el proyecto Clusters de Jeffrey Ventrella. Cada partícula se mueve siguiendo Motion 101: aceleración calculada a partir de fuerzas (atracción al cluster, ruido Perlin, interacción con el mouse), velocidad actualizada con aceleración y posición con velocidad. El usuario puede arrastrar la partícula-mouse, que altera el movimiento de las demás, creando patrones dinámicos con glow y colores cósmicos.
+
+
+
+``` js
+let particles = [];
+let clusters = [];
+let clusterColors = [];
+
+let numParticles = 400;
+let numClusters = 4;
+
+let mouseParticle;
+let dragging = false;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  colorMode(HSB, 360, 100, 100, 100);
+  background(0);
+
+  // Crear clusters
+  for (let i = 0; i < numClusters; i++) {
+    clusters.push(createVector(random(width), random(height)));
+    clusterColors.push(color(random(360), 70, 100, 100));
+  }
+
+  // Crear partículas
+  for (let i = 0; i < numParticles; i++) {
+    particles.push(new Particle());
+  }
+
+  mouseParticle = createVector(width / 2, height / 2);
+}
+
+function draw() {
+  background(0, 0, 0, 25); // estela suave cósmica
+
+  for (let p of particles) {
+    p.applyForces();
+    p.update();
+    p.display();
+  }
+
+  drawMouseParticle();
+}
+
+class Particle {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.vel = p5.Vector.random2D();
+    this.acc = createVector();
+    this.maxSpeed = 2.5;
+
+    this.noiseOffset = random(1000);
+    this.clusterIndex = floor(random(numClusters));
+    this.col = clusterColors[this.clusterIndex];
+  }
+
+  applyForce(force) {
+    this.acc.add(force);
+  }
+
+  applyForces() {
+
+    // --- Atracción hacia su cluster ---
+    let cluster = clusters[this.clusterIndex];
+    let attraction = p5.Vector.sub(cluster, this.pos);
+    attraction.setMag(0.03);
+    this.applyForce(attraction);
+
+    // --- Movimiento orgánico con noise ---
+    let angle = noise(this.noiseOffset, frameCount * 0.008) * TWO_PI * 2;
+    let noiseForce = p5.Vector.fromAngle(angle);
+    noiseForce.mult(0.08);
+    this.applyForce(noiseForce);
+
+    this.noiseOffset += 0.01;
+
+    // --- Interacción con mouse (campo gravitacional) ---
+    let d = p5.Vector.dist(this.pos, mouseParticle);
+
+    if (d < 220) {
+      let mouseForce = p5.Vector.sub(mouseParticle, this.pos);
+      mouseForce.setMag(0.15);
+      this.applyForce(mouseForce);
+    }
+  }
+
+  update() {
+    this.vel.add(this.acc);
+    this.vel.limit(this.maxSpeed);
+    this.pos.add(this.vel);
+    this.acc.mult(0);
+
+    // Wrap espacial
+    if (this.pos.x > width) this.pos.x = 0;
+    if (this.pos.x < 0) this.pos.x = width;
+    if (this.pos.y > height) this.pos.y = 0;
+    if (this.pos.y < 0) this.pos.y = height;
+  }
+
+  display() {
+    noStroke();
+
+    // Glow exterior
+    fill(hue(this.col), saturation(this.col), brightness(this.col), 15);
+    ellipse(this.pos.x, this.pos.y, 14);
+
+    // Glow medio
+    fill(hue(this.col), saturation(this.col), brightness(this.col), 40);
+    ellipse(this.pos.x, this.pos.y, 8);
+
+    // Núcleo brillante
+    fill(this.col);
+    ellipse(this.pos.x, this.pos.y, 3);
+  }
+}
+
+// Partícula del usuario
+function drawMouseParticle() {
+  noStroke();
+  fill(0, 0, 100, 80);
+  ellipse(mouseParticle.x, mouseParticle.y, 10);
+}
+
+function mousePressed() {
+  let d = dist(mouseX, mouseY, mouseParticle.x, mouseParticle.y);
+  if (d < 15) {
+    dragging = true;
+  }
+}
+
+function mouseDragged() {
+  if (dragging) {
+    mouseParticle.x = mouseX;
+    mouseParticle.y = mouseY;
+  }
+}
+
+function mouseReleased() {
+  dragging = false;
+}
+
+```
+
+
+Link: https://editor.p5js.org/Jakeline-Avila/sketches/oqcgDnnP5
+
+<img width="872" height="770" alt="image" src="https://github.com/user-attachments/assets/3b54a75d-a721-4249-a5a5-bfe37432d944" />
+<img width="871" height="794" alt="image" src="https://github.com/user-attachments/assets/39b547e6-43ef-4f2a-8c9c-75e75184f06f" />
 
 
 
