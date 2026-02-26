@@ -950,4 +950,13 @@ function getAttraction(a, b, mass) {
 
 ## Bitácora de reflexión
 
+### Actividad 5
+
+1. Explica detalladamente en tu bitácora ¿Qué es el marco de movimiento motion 101 y cómo se relacionan: fuerza, aceleración, velocidad y posición?
+
+R/= Es un concepto de la física que nos permite saber o analizar como se mueven los objetos en el espacio. La posición basicamente es el espacio que ocupa un cuerpo en el espacio en ese tiempo, funciona por medio del sistema de coordenadas, la velocidad es que tan rápido cambia la posición del cuerpo con respecto al tiempo y la aceleración es que tan rápido cambia la velocidad con respecto al tiempo. Todas son esenciales para poder simular y analizar el movimiento de un objeto por lo q están directamente relacionadas a motion 101.
+
+2. Vas a analizar este video sobre el artista Alexander Calder. Selecciona una de sus obras y luego crea una obra generativa inspirada en la obra de Calder que seleccionaste y el marco de movimiento motion 101 con fuerzas que trabajamos en esta unidad.
+
+R/=
 
