@@ -958,5 +958,192 @@ R/= Es un concepto de la física que nos permite saber o analizar como se mueven
 
 2. Vas a analizar este video sobre el artista Alexander Calder. Selecciona una de sus obras y luego crea una obra generativa inspirada en la obra de Calder que seleccionaste y el marco de movimiento motion 101 con fuerzas que trabajamos en esta unidad.
 
-R/=
+R/= 
+
+´´´ js
+class Leaf {
+  constructor(pos, length, color) {
+    this.pos = pos.copy();
+    this.prevPos = pos.copy();
+    this.acc = createVector(0, 0);
+    this.length = length;
+    this.anchor = null;   
+    this.color = color;
+    this.angle = random(TWO_PI);
+    this.angularVel = 0;
+    this.angularAcc = 0;
+    this.mass = 1;
+    this.children = [];
+    this.isDragged = false;
+  }
+  
+  applyForce(f) {
+    let fMass = f.copy().div(this.mass);
+    this.acc.add(fMass);
+  }
+  
+  verletUpdate() {
+    if (this.isDragged) {
+      // Si está arrastrada, mantener posición fija
+      this.prevPos = this.pos.copy();
+      this.acc.set(0, 0);
+      return;
+    }
+    let velocity = p5.Vector.sub(this.pos, this.prevPos);
+    velocity.mult(0.98);
+    let nextPos = p5.Vector.add(this.pos, velocity).add(p5.Vector.mult(this.acc, 1));
+    this.prevPos = this.pos.copy();
+    this.pos = nextPos;
+    this.acc.set(0, 0);
+    
+    this.angularAcc = -0.01 * sin(this.angle) + random(-0.002, 0.002);
+    this.angularVel = this.angularVel * 0.95 + this.angularAcc;
+    this.angle += this.angularVel;
+  }
+  
+  constrainToAnchor() {
+    if (!this.anchor) return;
+    
+    let dir = p5.Vector.sub(this.pos, this.anchor.pos);
+    let d = dir.mag();
+    let diff = d - this.length;
+    dir.normalize();
+    let correction = dir.mult(diff * 0.5);
+    
+    if (this.anchor.isFixed) {
+      this.pos.sub(correction.mult(2));
+    } else {
+      this.pos.sub(correction);
+      this.anchor.pos.add(correction);
+    }
+  }
+  
+  display() {
+    stroke(80);
+    strokeWeight(2);
+    line(this.pos.x, this.pos.y, this.anchor ? this.anchor.pos.x : this.pos.x, this.anchor ? this.anchor.pos.y : this.pos.y);
+    
+    push();
+    translate(this.pos.x, this.pos.y);
+    rotate(this.angle);
+    noStroke();
+    fill(this.color);
+    ellipse(0, 0, 30, 50);
+    fill(0, 50);
+    ellipse(5, 10, 35, 15);
+    pop();
+  }
+}
+
+let root;
+let allLeaves = [];
+let gravity;
+let wind;
+
+let draggedLeaf = null;
+let offset = null;
+
+function setup() {
+  createCanvas(800, 600);
+  gravity = createVector(0, 0.3);
+  allLeaves = [];
+  
+  // Paleta de colores
+  const palette = [
+    color(230, 57, 70),
+    color(241, 250, 238),
+    color(168, 218, 220),
+    color(69, 123, 157),
+    color(29, 53, 87),
+    color(255, 183, 3)
+  ];
+  
+  // Crear nodo raíz fijo en centro arriba
+  root = new Leaf(createVector(width/2, 100), 0, color(255,255,255,0));
+  root.isFixed = true;
+  allLeaves.push(root);
+  
+  // Función para crear ramas recursivamente
+  function createBranch(parent, depth, maxDepth) {
+    if (depth > maxDepth) return;
+    
+    let numChildren = floor(random(2, 4));
+    
+    for (let i = 0; i < numChildren; i++) {
+      let angle = map(i, 0, numChildren - 1, -PI / 3, PI / 3) + random(-PI/12, PI/12);
+      let length = random(60, 100);
+      let childPos = p5.Vector.add(parent.pos, createVector(length * sin(angle), length * cos(angle)));
+      let c = random(palette);
+      
+      let child = new Leaf(childPos, length, c);
+      child.anchor = parent;
+      allLeaves.push(child);
+      parent.children.push(child);
+      
+      createBranch(child, depth + 1, maxDepth);
+    }
+  }
+  
+  createBranch(root, 0, 3);
+}
+
+function draw() {
+  background(245, 245, 240);
+  
+  let windStrength = map(noise(frameCount * 0.01), 0, 1, -0.15, 0.15);
+  wind = createVector(windStrength, 0);
+  
+  for (let leaf of allLeaves) {
+    if (!leaf.isFixed && !leaf.isDragged) {
+      leaf.applyForce(gravity);
+      leaf.applyForce(wind);
+    }
+    leaf.verletUpdate();
+  }
+  
+  for (let i = 0; i < 10; i++) {
+    for (let leaf of allLeaves) {
+      leaf.constrainToAnchor();
+    }
+  }
+  
+  for (let leaf of allLeaves) {
+    leaf.display();
+  }
+  
+  fill(80);
+  noStroke();
+  textSize(16);
+  textAlign(CENTER);
+  text("Móvil Generativo inspirado en Calder con ramas, movimiento y arrastre", width / 2, 30);
+}
+
+function mousePressed() {
+  for (let leaf of allLeaves) {
+    let d = dist(mouseX, mouseY, leaf.pos.x, leaf.pos.y);
+    if (d < 30) {
+      draggedLeaf = leaf;
+      offset = createVector(leaf.pos.x - mouseX, leaf.pos.y - mouseY);
+      leaf.isDragged = true;
+      if (leaf.isFixed) leaf.isFixed = false;
+      break;
+    }
+  }
+}
+
+function mouseDragged() {
+  if (draggedLeaf) {
+    draggedLeaf.pos.x = mouseX + offset.x;
+    draggedLeaf.pos.y = mouseY + offset.y;
+  }
+}
+
+function mouseReleased() {
+  if (draggedLeaf) {
+    draggedLeaf.isDragged = false;
+    draggedLeaf = null;
+  }
+}
+´´´
+
 
