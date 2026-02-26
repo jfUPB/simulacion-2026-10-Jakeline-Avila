@@ -651,7 +651,7 @@ La narrativa emerge directamente de las reglas físicas del sistema:
 
 - Campos de repulsión → interacción con el entorno
 
-La interactividad se implementa permitiendo al usuario controlar la dirección del cohete con el mouse, modificando directamente las fuerzas aplicadas. Además, el usuario puede cambiar entre fases del viaje usando el teclado, alterando el conjunto de reglas físicas activas en el sistema.
+La interactividad de esta obra que hice se implementa permitiendo al usuario controlar la dirección del cohete con el mouse, modificando directamente las fuerzas aplicadas. Además, el usuario puede cambiar entre fases del viaje usando el teclado.
 
 #### Código
 
@@ -949,4 +949,5 @@ function getAttraction(a, b, mass) {
 
 
 ## Bitácora de reflexión
+
 
