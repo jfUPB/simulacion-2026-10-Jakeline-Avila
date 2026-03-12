@@ -725,6 +725,9 @@ Link de la experiencia: https://editor.p5js.org/Jakeline-Avila/sketches/GjlVuuKU
 
 ## Bitácora de reflexión
 
+<img width="3460" height="3051" alt="excalidraw1" src="https://github.com/user-attachments/assets/ea8c60f4-cf43-4f04-a867-a3eeea576463" />
+
+
 
 
 
