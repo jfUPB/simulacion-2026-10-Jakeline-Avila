@@ -307,6 +307,13 @@ Conclusión: el sistema de péndulos en serie produce un movimiento más dinámi
 
 Mi obra generativa parte de la idea de un ecosistema que crece y se transforma con la interacción del usuario. Uso una narrativa inspirada en el ciclo natural de crecimiento, floración y dispersión, pero no como una historia, sino como una forma de definir las reglas del sistema.
 
+Reglas que aplica:
+- Gravedad
+- Resistencia al aire
+- Atraccion al mouse
+- Levy flight para naturalidad
+- Colores aleatorios
+
 Las enredaderas representan el crecimiento del ecosistema, las flores marcan momentos de transformación y su explosión genera pétalos que dejan rastros de pintura en el espacio. El usuario interviene creando nuevas enredaderas o activando estas explosiones, lo que hace que el entorno cambie constantemente.
 
 De esta manera, la narrativa funciona como una guía para las reglas del sistema generativo, permitiendo que la obra evolucione y produzca composiciones diferentes en cada interacción.
@@ -716,6 +723,7 @@ Link de la experiencia: https://editor.p5js.org/Jakeline-Avila/sketches/GjlVuuKU
 
 
 ## Bitácora de reflexión
+
 
 
 
