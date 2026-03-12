@@ -313,6 +313,7 @@ Reglas que aplica:
 - Atraccion al mouse
 - Levy flight para naturalidad
 - Colores aleatorios
+- Distribución gaussiana, se usa bastante sin y cos
 
 Las enredaderas representan el crecimiento del ecosistema, las flores marcan momentos de transformación y su explosión genera pétalos que dejan rastros de pintura en el espacio. El usuario interviene creando nuevas enredaderas o activando estas explosiones, lo que hace que el entorno cambie constantemente.
 
@@ -723,6 +724,7 @@ Link de la experiencia: https://editor.p5js.org/Jakeline-Avila/sketches/GjlVuuKU
 
 
 ## Bitácora de reflexión
+
 
 
 
