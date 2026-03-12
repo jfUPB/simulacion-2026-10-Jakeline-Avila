@@ -578,6 +578,55 @@ class Vine {
 ```
 Sketch.js
 ``` js
+let S = 1, season;
+let paintLayer;
+let vines = [], petals = [];
+let noiseOff = 0;
+
+function setup() {
+  createCanvas(820, 580);
+  colorMode(RGB, 255, 255, 255, 255);
+  season = SEASONS[1];
+  paintLayer = createGraphics(width, height);
+  paintLayer.colorMode(RGB, 255, 255, 255, 255);
+  clearPaintLayer();
+  spawnInitialVines();
+}
+
+function draw() {
+  noiseOff += 0.0025;
+  background(season.bg[0], season.bg[1], season.bg[2]);
+  
+  // Textura papel
+  for (let i = 0; i < 40; i++) {
+    let px = random(width), py = random(height);
+    let n  = noise(px*0.01, py*0.01, noiseOff*0.08);
+    stroke(0, 0, 0, n * 6);
+    strokeWeight(0.4);
+    point(px, py);
+  }
+
+  image(paintLayer, 0, 0);
+
+  for (let v of vines) { v.update(); v.draw(); }
+  petals = petals.filter(pt => pt.alive);
+  for (let pt of petals) { pt.update(); pt.draw(); }
+
+  if (frameCount % 240 === 0) {
+    vines = vines.filter(v => !(v.dead && (!v.flower || v.flower.exploded)));
+  }
+
+  if (frameCount % 300 === 0 && vines.length < 15) spawnVineFromBorder();
+
+  noStroke();
+  fill(0, 0, 0, 40);
+  textSize(10);
+  textAlign(RIGHT);
+  text(`CLICK para flores · ESPACIO para explotar`, width - 15, height - 15);
+}
+
+// --- UTILIDADES ---
+function clearPaintLayer() {
   paintLayer.clear();
   paintLayer.background(season.bg[0], season.bg[1], season.bg[2]);
 }
@@ -622,6 +671,37 @@ function paintSplash(x, y, col, size) {
   paintLayer.push();
   paintLayer.noStroke();
   for (let i = 0; i < 8; i++) {
+    let r = size * random(1.8, 4.5);
+    paintLayer.fill(col[0], col[1], col[2], random(35, 120));
+    paintLayer.ellipse(x+randomGaussian(0, size), y+randomGaussian(0, size), r, r*0.8);
+  }
+  paintLayer.pop();
+}
+
+function mousePressed() {
+  let closest = null, minD = 35;
+  for (let v of vines) {
+    if (v.flower && !v.flower.exploded) {
+      let d = dist(mouseX, mouseY, v.flower.x + v.flower.swayX, v.flower.y + v.flower.swayY);
+      if (d < minD) { minD = d; closest = v; }
+    }
+  }
+  if (closest) closest.explodeFlower();
+  else spawnVineAtClick(mouseX, mouseY);
+}
+
+function keyPressed() {
+  if (['1','2','3','4'].includes(key)) changeSeason(parseInt(key));
+  if (key === ' ') vines.forEach(v => v.explodeFlower());
+  if (key.toLowerCase() === 'c') clearPaintLayer();
+}
+
+function changeSeason(n) {
+  season = SEASONS[n];
+  clearPaintLayer();
+  vines = []; petals = [];
+  spawnInitialVines();
+}
 ```
 
 Link de la experiencia: https://editor.p5js.org/Jakeline-Avila/sketches/GjlVuuKUf
@@ -636,5 +716,6 @@ Link de la experiencia: https://editor.p5js.org/Jakeline-Avila/sketches/GjlVuuKU
 
 
 ## Bitácora de reflexión
+
 
 
