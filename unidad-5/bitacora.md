@@ -951,3 +951,42 @@ function windowResized() {
 
 
 ## Bitácora de reflexión
+
+Parte 1 — Principios fundamentales
+1. Una partícula es una entidad con estado.
+Cada pétalo en mi pieza tiene su propia posición, velocidad, color, tamaño, ángulo y nivel de transparencia. No son copias idénticas: cada una recuerda dónde está y cómo se siente en ese momento. Eso es tener estado.
+2. Una partícula tiene ciclo de vida.
+Un pétalo nace cuando una flor explota, vuela libremente afectado por el viento, puede ser capturado por el loto y fluir en él, y eventualmente muere: dejando una mancha de pintura si muere en vuelo, o generando cenizas si se marchita desde el loto. La muerte no es solo desaparecer, comunica el final de algo.
+3. Un sistema de partículas gestiona colecciones dinámicas de elementos.
+En sketch.js hay un arreglo petals[] que en cada frame se actualiza, se dibuja y se filtra. El sistema no sabe nada de cada pétalo individual: solo itera sobre todos y les dice "actualízate" y "dibújate". La colección crece y encoge constantemente.
+4. La creación y eliminación de partículas no es un detalle técnico menor, sino parte central del modelo.
+En mi pieza, cuándo nace un pétalo (cuando el usuario hace click en una flor) y cómo muere (con cenizas, con mancha de pintura) son decisiones narrativas. Si simplemente aparecieran y desaparecieran sin contexto, la pieza no comunicaría nada sobre el ciclo de vida.
+5. Debe haber separación entre la lógica de una partícula individual y la lógica del sistema.
+PaintPetal sabe cómo moverse, cómo dibujarse y cómo morir. No sabe cuántas otras partículas existen ni qué hace el loto. Esa responsabilidad es del sistema en sketch.js y lotus.js. Cada capa hace solo su trabajo.
+6. Un emisor o particle system es una abstracción importante.
+Las flores VineFlower actúan como emisores: cuando explotan, generan un lote de pétalos con parámetros específicos. No son partículas ellas mismas, son la fuente que decide cuántos pétalos nacen, con qué colores y con qué velocidades iniciales.
+7. Pueden existir sistemas de sistemas.
+Las enredaderas Vine son un sistema que contiene flores VineFlower, que a su vez son emisores de pétalos PaintPetal, que al morir generan cenizas AshParticle. Hay al menos tres niveles anidados: el sistema de vines contiene el sistema de flores contiene el sistema de pétalos contiene el sistema de cenizas.
+8. Puede haber heterogeneidad usando herencia y polimorfismo.
+PaintPetal y AshParticle son dos tipos de partículas distintos con comportamientos diferentes, pero el sistema los trata de forma similar: ambos tienen update(), draw() y un flag alive. Esa interfaz común es lo que permite mezclarlos en el mismo loop sin que el sistema necesite saber exactamente qué tipo es cada uno.
+9. Las partículas pueden responder a fuerzas globales y locales.
+Los pétalos responden a la gravedad y al ruido de Perlin como fuerzas globales (afectan a todos por igual). Pero también responden a fuerzas locales: la atracción del cursor cuando el usuario arrastra, o la fuerza de captura del loto cuando un pétalo entra en su radio. La misma partícula puede estar bajo influencias distintas según su posición y contexto.
+10. La representación visual puede variar sin cambiar el principio algorítmico de fondo.
+Un pétalo en vuelo libre, un pétalo fluyendo en el loto y un pétalo marchitándose se dibujan de formas distintas (con brillo pulsante, encogido, con aura) pero el algoritmo de fondo es el mismo: tiene posición, se mueve, tiene alpha. El draw() cambia según el estado, pero la estructura de la partícula no.
+
+Parte 2 — Transferencia a Unity
+Qué se mantendría igual
+Lo que es independiente de la herramienta son los principios lógicos:
+
+El ciclo de vida de tres fases (vuelo libre → capturado → marchitamiento) seguiría siendo el mismo, implementado con una máquina de estados.
+La separación entre partícula individual y sistema gestor se mantiene: en Unity sería un ParticleData script por objeto y un PetalSystem manager separado.
+Las fuerzas (gravedad, ruido de Perlin, atracción al cursor) son matemáticamente idénticas — Unity tiene Rigidbody y se puede implementar Perlin noise igual.
+La lógica del loto como sistema con fases (dormant → waiting → blooming → withering → dead) es pura lógica de estados, no depende de p5.js.
+
+
+Qué cambiaría
+Lo que cambiaría al pasar a Unity es principalmente la capa técnica de implementación. El renderizado ya no sería con funciones simples como ellipse() sino con sprites o meshes con shaders. La gestión de memoria requeriría object pooling en lugar de simplemente filtrar un array, porque instanciar y destruir objetos constantemente en Unity es costoso. El ruido de Perlin seguiría existiendo pero a través de Mathf.PerlinNoise(). La capa de pintura que en p5.js se logra con un createGraphics() necesitaría una Render Texture con un paint shader. Y los eventos del usuario pasarían del simple mousePressed() a un Input System con raycast sobre un plano 2D.
+
+
+Qué partes son verdaderamente independientes de la herramienta
+El concepto narrativo completo: que el usuario no controla el ciclo sino que interviene en él, que la muerte deja huella, que el loto solo florece con esfuerzo colectivo. Esas decisiones de diseño no viven en ningún archivo de código ,viven en la idea, y se pueden trasladar a cualquier herramienta.
