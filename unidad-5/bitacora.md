@@ -64,7 +64,33 @@ this.power = 300;
 También podría modificarse la fórmula de fuerza en el método repel() para hacer la repulsión más intensa o más suave.
 ## Bitácora de aplicación 
 1. Idea: Me gusta la idea de que todos al final nos convertiremos en parte de algo mayor, por ello escogí la trascendencia. Las flores las represento como si fueran almas, relacionandolas con el sentimiento de que la vida es hermosa pero no eterna, tu funcionas como si estuvieras guiando a las flores al más allá. Una vez tocas una flor esta explota en petalos los cuales se pueden arrastrar al medio convirtiendose en la silueta de un loto. En el folclor los lotos simboliza la trascendencia espiritual y la pureza, elevándose sobre aguas fangosas para florecer inmaculada. Una vez el loto este completo este explota en cenizas, como sabemos los lotos una vez se marchitan son triturados y convertidos en polvo para luego dejarlos libres en el aire, significando que las almas han completado su camino.
-2. 
+2. Aquí va el mapa de decisiones:
+
+Mapa de decisiones
+
+Emisión de partículas
+Las flores nacen en los bordes del canvas sobre enredaderas que crecen orgánicamente, porque el origen en los márgenes refuerza la idea de que la vida emerge desde afuera —desde la naturaleza— y viaja hacia el centro. La explosión al hacer click representa el momento de florecimiento máximo: la flor libera todo lo que tiene.
+
+Tipos de partículas
+Hay dos tipos: PaintPetal (pétalos) y AshParticle (cenizas). Los pétalos representan la vida activa —colorida, móvil, con trayectorias impredecibles—, mientras las cenizas representan lo que queda después de la muerte: fragmentos grises, pesados, que caen y desaparecen lentamente.
+Fuerzas
+
+La gravedad y el ruido de Perlin guían a los pétalos en vuelo libre, simulando el movimiento errático del viento. La fuerza de arrastre del usuario es la única que puede redirigir ese destino, lo que le da al gesto un significado narrativo: el usuario no controla el ciclo, pero puede intervenir en él.
+Condición de muerte
+Los pétalos no simplemente desaparecen: al morir en vuelo libre dejan una mancha de pintura en el canvas (memoria del paso), y al marchitarse desde el loto generan cenizas. La muerte deja huella, como en cualquier ciclo real.
+
+El loto
+El loto es el corazón del ciclo: solo florece cuando recibe suficientes pétalos, permanece en bloom un tiempo limitado y luego se marchita. Representa que la plenitud es temporal y requiere un esfuerzo colectivo para ocurrir.
+
+Interacción del usuario
+Hacer click en una flor tiene el significado de provocar la floración: el usuario decide cuándo y qué flor explota. Arrastrar pétalos hacia el loto significa alimentar el ciclo: sin esa intervención, los pétalos se dispersan y el loto nunca florece. La interacción no es decorativa, es la condición necesaria para que el ciclo se complete.
+
+Gestión de memoria
+Los pétalos y cenizas muertos se filtran en cada frame (filter(p => p.alive)), y las enredaderas completamente muertas y sin flores se eliminan cada 240 frames para mantener el rendimiento sin interrumpir la experiencia visual.
+Paletas por estación
+Cada estación cambia los colores del fondo, las enredaderas y los pétalos porque el mismo ciclo de vida —nacer, florecer, morir— se ve y se siente distinto según el contexto. Es la misma estructura, otra emoción.
+
+3. 
 <img width="1280" height="904" alt="image" src="https://github.com/user-attachments/assets/f830105d-79cf-404c-97f7-36aa718f59ac" />
 
 <img width="1280" height="904" alt="image" src="https://github.com/user-attachments/assets/ea16adb6-dd82-4ba2-af8a-e87419594e20" />
