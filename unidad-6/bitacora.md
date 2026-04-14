@@ -84,4 +84,76 @@ Si quisiera diseñar visuales para una canción contemplativa, usaría flow fiel
 ## Bitácora de aplicación 
 
 
+1. Canción escogida: Headlock
+2. Me gustaria transmitir la tranquila desesperación de la canción junto con la intensa lucha al cambio, la comodidad tóxica y el estancamiento emocional.
+3. 
+<img width="740" height="416" alt="image" src="https://github.com/user-attachments/assets/2b7c1d5c-a08f-4a1d-b419-4c8791ba1348" />
+<img width="800" height="480" alt="image" src="https://github.com/user-attachments/assets/0042b277-1fb5-4968-834c-17b25dd61388" />
+
+```
+let particles = [];
+let scale = 0.002;
+let t = 0;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  background(0);
+
+  // muchas partículas para generar flujo continuo
+  for (let i = 0; i < 5000; i++) {
+    particles.push(new Particle());
+  }
+}
+
+function draw() {
+  // no limpiamos completamente → acumulación líquida
+  fill(0, 15);
+  noStroke();
+  rect(0, 0, width, height);
+
+  for (let p of particles) {
+    p.update();
+    p.show();
+  }
+
+  t += 0.005;
+}
+
+class Particle {
+  constructor() {
+    this.pos = createVector(random(width), random(height));
+    this.prev = this.pos.copy();
+    this.vel = createVector(0, 0);
+  }
+
+  update() {
+    this.prev = this.pos.copy();
+
+    // campo fluido suave
+    let angle =
+      noise(this.pos.x * scale, this.pos.y * scale, t) *
+      TWO_PI *
+      2;
+
+    let force = p5.Vector.fromAngle(angle);
+
+    this.vel.add(force);
+    this.vel.limit(1.5);
+    this.pos.add(this.vel);
+
+    // wrap edges
+    if (this.pos.x < 0) this.pos.x = width;
+    if (this.pos.x > width) this.pos.x = 0;
+    if (this.pos.y < 0) this.pos.y = height;
+    if (this.pos.y > height) this.pos.y = 0;
+  }
+
+  show() {
+    stroke(255, 180);
+    strokeWeight(0.6);
+    line(this.prev.x, this.prev.y, this.pos.x, this.pos.y);
+  }
+}
+```
+
 ## Bitácora de reflexión
