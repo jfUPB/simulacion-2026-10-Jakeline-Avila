@@ -97,11 +97,46 @@ Si quisiera diseñar visuales para una canción contemplativa, usaría flow fiel
 
 ### Bocetos
 
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/aadc3a32-9426-43ed-a9d2-4650fc289d18" />
+
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/e5b8ae6a-e12c-4968-bd6f-26edff064f26" />
+
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/d50fb1b4-d53e-4007-b898-8f78dee410b2" />
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/c1ee712a-3fbd-4b32-8706-27882ee630b6" />
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/09496560-ad5b-4005-9712-5ae6cfed5234" />
+
+<img width="1131" height="1599" alt="image" src="https://github.com/user-attachments/assets/d70cf2bd-1798-47bf-97b5-eca0d3fbc7cd" />
 
 
+### Mapa de decisiones
 
+- Paleta Blanco y Negro (Minimalismo Limpio): Para enfatizar el contraste entre el vacío y la forma sin distracciones de color.
+- Metaballs (Lógica Líquida): Elegidos por su capacidad de fusionarse y separarse, representando relaciones o estados de ánimo que se pegan y se rompen.
+- Faux 3D (Montañas): Añade peso visual y una sensación de "terreno difícil" durante la fase final de la canción.
 
+### Mapa de integración
+
+- Mouse (Movimiento): Perturba el flujo de las partículas.
+- Mouse (Click/Drag): Cambia la fuerza de repulsión a atracción. Permite "arrastrar" y estirar las líneas como si fueran materia física.
+- Teclas 1, 2, 3, 4: Selector manual de estados (1: Líquido, 2: Puntos, 3: Montañas, 4: Caleidoscopio). Permite al intérprete sincronizarse con la narrativa musical de forma libre.
+- Barra Espaciadora: Modo de "Baja Densidad". Reduce el sistema al mínimo para acompañar silencios o momentos de susurro.
+- Tecla R: Reset/Modo Automático.
+
+### Justificación del algoritmo escogido
+
+- Flow Fields (Perlin Noise): Se eligieron campos de flujo porque Headlock no se siente como un comportamiento de grupo (flocking), sino como una corriente inevitable que arrastra al espectador.
+- Shaders (GLSL): Se utilizaron para lograr una estética de alta resolución y efectos de distorsión (glitch/3D) que serían imposibles de procesar en tiempo real solo con la CPU del navegador.
+
+### Explicación de la relación audio-visual.
+
+- Bajos (Bass): Controlan la velocidad de los agentes y la escala de los metaballs. A más bajo, el sistema se "infla" y se agita.
+- Agudos (Treble): Controlan el "temblor" de las líneas. Los sonidos agudos de la voz o los platillos causan una micro-vibración nerviosa en la visual.
+- FFT (Energía): Determina la densidad de las curvas de nivel.
 ### Evidencia IA
+- Asistente Técnico: Utilicé la IA para la materialización de los Shaders (GLSL) en WebGL y para depurar errores de compilación complejos (como el error de fwidth y versiones de WebGL 2.0).
+- Iteración: La IA ayudó a pulir la física de "arrastre" del mouse.
+- Autoría: El concepto de las 5 fases, la selección de la canción, la estética minimalista y la dirección narrativa ("Error de sistema" -> "Montañas") son de mi autoría exclusiva.
+
 <img width="730" height="208" alt="Captura de pantalla 2026-04-16 123856" src="https://github.com/user-attachments/assets/1a56157e-47d2-4e96-b032-eb386f0785ec" />
 <img width="727" height="249" alt="Captura de pantalla 2026-04-16 123825" src="https://github.com/user-attachments/assets/5fcbeb62-32b9-43b5-8cea-8870b19ac78d" />
 
