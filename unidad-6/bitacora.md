@@ -169,6 +169,7 @@ let smoothTreble = 0;
 let manualMode = false;
 
 function preload() {
+  // Asegúrate de subir el archivo Headlock.mp3 a tu editor
   song = loadSound('Headlock.mp3'); 
   liquidShader = loadShader('shader.vert', 'shader.frag');
 }
@@ -180,6 +181,11 @@ function setup() {
   
   cols = floor(width / scl);
   rows = floor(height / scl);
+
+  // Inicializar el arreglo de flujo
+  for (let i = 0; i < rows; i++) {
+    flowField[i] = [];
+  }
 
   for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
@@ -200,48 +206,48 @@ function mousePressed() {
   if (!started && song.isLoaded()) {
     userStartAudio();
     song.play();
-    fullscreen(true);
     started = true;
     songDur = song.duration();
+    
+    // --- ESTO ACTIVA EL FULLSCREEN AL INICIAR ---
+    let fs = fullscreen();
+    fullscreen(!fs);
   }
 }
 
 function draw() {
   background(0);
-  if (!started) return;
+  if (!started) {
+    fill(255);
+    textAlign(CENTER);
+    text("Haz click para iniciar sistema", 0, 0);
+    return;
+  }
 
   songTimer = song.currentTime();
   currentDensity = lerp(currentDensity, targetDensity, 0.05);
 
-  // CONTROL DE FASES AUTOMÁTICO CON GLITCH
+  // CONTROL DE FASES AUTOMÁTICO
   if (!manualMode) {
     if (songTimer > 72.0 && songTimer < 104.0) {
       if (phase !== 2) {
         isGlitching = true;
         glitchTimer++;
-        if (glitchTimer > 60) {
-          isGlitching = false;
-          phase = 2;
-        }
+        if (glitchTimer > 60) { isGlitching = false; phase = 2; }
       }
     } else if (songTimer >= 104.0 && songTimer < 140.0) {
-      phase = 3; 
-      isGlitching = false;
+      phase = 3; isGlitching = false;
     } else if (songTimer >= 140.0 && songTimer < (songDur - 10)) {
-      phase = 4;
-      isGlitching = false;
+      phase = 4; isGlitching = false;
     } else if (songTimer >= (songDur - 10)) {
-      phase = 5;
-      targetDensity = 0.0;
-      // Glitch final sutil
+      phase = 5; targetDensity = 0.0;
       isGlitching = (songTimer < (songDur - 8));
     } else {
-      phase = 1;
-      isGlitching = false;
+      phase = 1; isGlitching = false;
     }
   }
 
-  // Transiciones de niveles
+  // Transiciones
   if (phase === 1) transitionLevel = lerp(transitionLevel, 0.0, 0.05);
   if (phase === 2) transitionLevel = lerp(transitionLevel, 1.0, 0.04);
   if (phase === 3) transitionLevel = lerp(transitionLevel, 2.0, 0.02);
@@ -254,6 +260,16 @@ function draw() {
   smoothTreble = lerp(smoothTreble, treble, 0.2);
   
   zoff += 0.0004 + bass * 0.001;
+
+  // RELLENAR EL CAMPO DE FLUJO
+  for (let y = 0; y < rows; y++) {
+    for (let x = 0; x < cols; x++) {
+      let angle = noise(x * 0.1, y * 0.1, zoff) * TWO_PI * 4;
+      let v = p5.Vector.fromAngle(angle);
+      v.setMag(0.1 + bass * 0.5); 
+      flowField[y][x] = v;
+    }
+  }
 
   particles.forEach(p => {
     p.follow(flowField);
@@ -296,7 +312,6 @@ function drawGlitchOverlays() {
     if(i==2) fill(255);
     let ox = random(-10, 10);
     let oy = random(-10, 10);
-    // Dibujo de barras de error originales
     rect(-w/2 + ox, -20 + oy, w, 40);
     rect(random(-width/2, width/2), random(-height/2, height/2), random(width), 2);
   }
@@ -333,7 +348,9 @@ class Particle {
   follow(vectors) {
     let x = floor(this.pos.x / scl);
     let y = floor(this.pos.y / scl);
-    if (vectors[y] && vectors[y][x]) this.acc.add(vectors[y][x]);
+    if (vectors[y] && vectors[y][x]) {
+      this.acc.add(vectors[y][x]);
+    }
     
     let d = dist(this.pos.x, this.pos.y, mouseX, mouseY);
     if (d < 300) {
@@ -388,18 +405,18 @@ function windowResized() {
   resizeCanvas(windowWidth, windowHeight);
   cols = floor(width / scl);
   rows = floor(height / scl);
+  flowField = [];
+  for (let i = 0; i < rows; i++) {
+    flowField[i] = [];
+  }
 }
 
 ```
 
 Shader.frag
 ``` js
-#version 300 es
-// Fragment Shader Final - Glitch & Drag Optimized
 precision highp float;
-
-in vec2 vTexCoord;
-out vec4 outColor;
+varying vec2 vTexCoord;
 uniform vec2 uResolution;
 uniform vec2 uParticles[30];
 uniform float uBass;
@@ -430,7 +447,6 @@ vec2 kaleidoscope(vec2 st, float segments) {
 void main() {
     vec2 st = vTexCoord;
     
-    // Temblor nervioso de agudos
     if (uTreble > 0.45) {
        st.x += (random(vec2(uTime, st.y)) - 0.5) * 0.007 * uTreble;
     }
@@ -440,7 +456,6 @@ void main() {
         st = mix(st, kaleidoscope(st, 6.0), kTransition);
     }
 
-    // Distorsión horizontal de Glitch
     if(uIsGlitching > 0.5) {
         st.x += (random(vec2(uTime, st.y)) - 0.5) * 0.12;
     }
@@ -452,51 +467,39 @@ void main() {
         sum += (0.0008 * uDensity) / (pow(d, 2.0) + 0.0001);
     }
 
-    // Interacción Mouse Drag
     float mRad = 0.15 + (uMousePressed * 0.35);
     float mStr = 0.15 + (uMousePressed * 0.45);
     sum += smoothstep(mRad, 0.0, distance(st, uMouse)) * mStr;
 
-    // FASE 1
     float freq = 45.0 + uBass * 20.0;
     float p1 = smoothstep(0.0, 0.1, sin(sum * freq - uTime * 1.8)) * smoothstep(0.1, 0.12, sum);
 
-    // FASE 2
     float p2 = 0.0;
     if(sum > 0.6) p2 = pattern(st, 180.0, 0.4);
     else if (sum > 0.3) p2 = (random(st + uTime) > 0.8) ? 1.0 : 0.0;
     else if (sum > 0.1) p2 = pattern(st, 320.0, 0.05);
 
-    // FASE 3
     float f3 = 75.0 + uBass * 10.0;
     float h = sin(sum * f3 - uTime * 0.4);
-    float sh = fwidth(h) * 12.0; 
-    float p3 = step(0.5, h) * (1.0 - sh) * smoothstep(0.05, 0.1, sum) + (step(0.92, h) * 0.4);
+    float p3 = step(0.5, h) * smoothstep(0.05, 0.1, sum);
 
     float res = 0.0;
     if (uTransition <= 1.0) res = mix(p1, p2, clamp(uTransition, 0.0, 1.0));
     else if (uTransition <= 2.0) res = mix(p2, p3, clamp(uTransition - 1.0, 0.0, 1.0));
     else res = p2; 
 
-    // Outro desvanecimiento
     if (uTransition > 3.0) res *= (1.0 - clamp(uTransition - 3.0, 0.0, 1.0));
+    if(uIsGlitching > 0.5 && random(vec2(uTime)) > 0.85) res = 1.0 - res;
 
-    // Flash de inversión de color (Glitch feel)
-    if(uIsGlitching > 0.5 && random(vec2(uTime)) > 0.85) {
-        res = 1.0 - res;
-    }
-
-    outColor = vec4(vec3(res), 1.0);
+    gl_FragColor = vec4(vec3(res), 1.0);
 }
 ```
 Shader.vert
 ``` js
-#version 300 es
 precision highp float;
-
-in vec3 aPosition;
-in vec2 aTexCoord;
-out vec2 vTexCoord;
+attribute vec3 aPosition;
+attribute vec2 aTexCoord;
+varying vec2 vTexCoord;
 
 void main() {
   vTexCoord = aTexCoord;
