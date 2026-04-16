@@ -83,77 +83,409 @@ Si quisiera diseñar visuales para una canción contemplativa, usaría flow fiel
 
 ## Bitácora de aplicación 
 
+### Concepto visual:
 
 1. Canción escogida: Headlock
-2. Me gustaria transmitir la tranquila desesperación de la canción junto con la intensa lucha al cambio, la comodidad tóxica y el estancamiento emocional.
-3. 
+2. Me gustaria transmitir la tranquila desesperación de la canción junto con la intensa lucha al cambio, la comodidad tóxica y el estancamiento emocional. Se utiliza la metáfora del líquido como un elemento que fluye pero que a la vez atrapa (un "headlock" o llave de lucha). La visual evoluciona de formas líquidas cohesivas hacia una fragmentación puntillista y finalmente a una estructura topográfica sólida, representando el proceso de endurecimiento y cristalización de las emociones.
+
+### Moodboard o referencias
 <img width="740" height="416" alt="image" src="https://github.com/user-attachments/assets/2b7c1d5c-a08f-4a1d-b419-4c8791ba1348" />
 <img width="800" height="480" alt="image" src="https://github.com/user-attachments/assets/0042b277-1fb5-4968-834c-17b25dd61388" />
+<img width="480" height="270" alt="image" src="https://github.com/user-attachments/assets/96c8eead-1378-48b1-84be-93597693c516" />
+<img width="800" height="480" alt="image" src="https://github.com/user-attachments/assets/2f3fa803-1d96-46f4-af8b-01a4fd38a201" />
+<img width="626" height="470" alt="image" src="https://github.com/user-attachments/assets/4225092c-af7c-4132-99a8-6b1a492623c6" />
 
-```
+### Bocetos
+
+
+
+
+
+### Evidencia IA
+<img width="730" height="208" alt="Captura de pantalla 2026-04-16 123856" src="https://github.com/user-attachments/assets/1a56157e-47d2-4e96-b032-eb386f0785ec" />
+<img width="727" height="249" alt="Captura de pantalla 2026-04-16 123825" src="https://github.com/user-attachments/assets/5fcbeb62-32b9-43b5-8cea-8870b19ac78d" />
+
+
+
+### Codigo fuente
+
+#### Skecth.js
+``` js
 let particles = [];
-let scale = 0.002;
-let t = 0;
+const numParticles = 30;
+let flowField = [];
+const scl = 40;
+let cols, rows;
+let zoff = 0;
+let liquidShader;
+let song;
+let fft;
+let started = false;
+
+let songTimer = 0;
+let songDur = 0;
+let phase = 1; 
+let transitionLevel = 0;
+let targetDensity = 1.0;
+let currentDensity = 1.0;
+let isGlitching = false;
+let glitchTimer = 0;
+let smoothTreble = 0;
+let manualMode = false;
+
+function preload() {
+  song = loadSound('Headlock.mp3'); 
+  liquidShader = loadShader('shader.vert', 'shader.frag');
+}
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  background(0);
+  createCanvas(windowWidth, windowHeight, WEBGL);
+  pixelDensity(1);
+  noCursor();
+  
+  cols = floor(width / scl);
+  rows = floor(height / scl);
 
-  // muchas partículas para generar flujo continuo
-  for (let i = 0; i < 5000; i++) {
+  for (let i = 0; i < numParticles; i++) {
     particles.push(new Particle());
+  }
+  fft = new p5.FFT();
+}
+
+function keyPressed() {
+  if (key === ' ') targetDensity = (targetDensity === 1.0) ? 0.2 : 1.0;
+  if (key === '1') { phase = 1; manualMode = true; isGlitching = false; }
+  if (key === '2') { phase = 2; manualMode = true; isGlitching = false; }
+  if (key === '3') { phase = 3; manualMode = true; isGlitching = false; }
+  if (key === '4') { phase = 4; manualMode = true; isGlitching = false; }
+  if (key === 'r' || key === 'R') { manualMode = false; glitchTimer = 0; }
+}
+
+function mousePressed() {
+  if (!started && song.isLoaded()) {
+    userStartAudio();
+    song.play();
+    fullscreen(true);
+    started = true;
+    songDur = song.duration();
   }
 }
 
 function draw() {
-  // no limpiamos completamente → acumulación líquida
-  fill(0, 15);
-  noStroke();
-  rect(0, 0, width, height);
+  background(0);
+  if (!started) return;
 
-  for (let p of particles) {
-    p.update();
-    p.show();
+  songTimer = song.currentTime();
+  currentDensity = lerp(currentDensity, targetDensity, 0.05);
+
+  // CONTROL DE FASES AUTOMÁTICO CON GLITCH
+  if (!manualMode) {
+    if (songTimer > 72.0 && songTimer < 104.0) {
+      if (phase !== 2) {
+        isGlitching = true;
+        glitchTimer++;
+        if (glitchTimer > 60) {
+          isGlitching = false;
+          phase = 2;
+        }
+      }
+    } else if (songTimer >= 104.0 && songTimer < 140.0) {
+      phase = 3; 
+      isGlitching = false;
+    } else if (songTimer >= 140.0 && songTimer < (songDur - 10)) {
+      phase = 4;
+      isGlitching = false;
+    } else if (songTimer >= (songDur - 10)) {
+      phase = 5;
+      targetDensity = 0.0;
+      // Glitch final sutil
+      isGlitching = (songTimer < (songDur - 8));
+    } else {
+      phase = 1;
+      isGlitching = false;
+    }
   }
 
-  t += 0.005;
+  // Transiciones de niveles
+  if (phase === 1) transitionLevel = lerp(transitionLevel, 0.0, 0.05);
+  if (phase === 2) transitionLevel = lerp(transitionLevel, 1.0, 0.04);
+  if (phase === 3) transitionLevel = lerp(transitionLevel, 2.0, 0.02);
+  if (phase === 4) transitionLevel = lerp(transitionLevel, 3.0, 0.05);
+  if (phase === 5) transitionLevel = lerp(transitionLevel, 4.0, 0.05);
+
+  fft.analyze();
+  let bass = fft.getEnergy("bass") / 255;
+  let treble = fft.getEnergy("treble") / 255;
+  smoothTreble = lerp(smoothTreble, treble, 0.2);
+  
+  zoff += 0.0004 + bass * 0.001;
+
+  particles.forEach(p => {
+    p.follow(flowField);
+    if (phase === 2 || phase === 4) p.separate(particles); 
+    p.update(bass);
+    p.edges();
+  });
+
+  if (liquidShader) {
+    shader(liquidShader);
+    liquidShader.setUniform('uResolution', [width, height]);
+    liquidShader.setUniform('uBass', bass);
+    liquidShader.setUniform('uTreble', smoothTreble);
+    liquidShader.setUniform('uMouse', [mouseX / width, 1.0 - (mouseY / height)]);
+    liquidShader.setUniform('uTime', millis() / 1000.0);
+    liquidShader.setUniform('uTransition', transitionLevel);
+    liquidShader.setUniform('uDensity', currentDensity);
+    liquidShader.setUniform('uIsGlitching', isGlitching ? 1.0 : 0.0);
+    liquidShader.setUniform('uMousePressed', mouseIsPressed ? 1.0 : 0.0);
+
+    let particlePositions = [];
+    for(let p of particles) {
+      particlePositions.push(p.pos.x / width, 1.0 - (p.pos.y / height));
+    }
+    liquidShader.setUniform('uParticles', particlePositions);
+    rect(-width/2, -height/2, width, height);
+  }
+
+  if (isGlitching) drawGlitchOverlays();
+  if (phase === 5 && currentDensity < 0.05) drawTextFinal();
+}
+
+function drawGlitchOverlays() {
+  push();
+  noStroke();
+  let w = width * 0.4;
+  for(let i=0; i<3; i++){
+    if(i==0) fill(255, 0, 80, 150);
+    if(i==1) fill(0, 255, 255, 150);
+    if(i==2) fill(255);
+    let ox = random(-10, 10);
+    let oy = random(-10, 10);
+    // Dibujo de barras de error originales
+    rect(-w/2 + ox, -20 + oy, w, 40);
+    rect(random(-width/2, width/2), random(-height/2, height/2), random(width), 2);
+  }
+  pop();
+}
+
+function drawTextFinal() {
+  push();
+  resetShader();
+  noStroke();
+  textAlign(CENTER, CENTER);
+  textFont('monospace');
+  let fade = map(songTimer, songDur - 8, songDur, 0, 255);
+  fill(255, fade);
+  textSize(width * 0.05);
+  text("HEADLOCK", 0, -40);
+  textSize(width * 0.015);
+  fill(200, fade);
+  text("Imogen Heap", 0, 10);
+  fill(150, fade);
+  textSize(width * 0.012);
+  text("Visuales hechas por Jakeline Avila", 0, 80);
+  pop();
 }
 
 class Particle {
   constructor() {
     this.pos = createVector(random(width), random(height));
-    this.prev = this.pos.copy();
-    this.vel = createVector(0, 0);
+    this.vel = createVector(random(-1, 1), random(-1, 1));
+    this.acc = createVector(0, 0);
+    this.maxSpeed = 0.8; 
   }
 
-  update() {
-    this.prev = this.pos.copy();
+  follow(vectors) {
+    let x = floor(this.pos.x / scl);
+    let y = floor(this.pos.y / scl);
+    if (vectors[y] && vectors[y][x]) this.acc.add(vectors[y][x]);
+    
+    let d = dist(this.pos.x, this.pos.y, mouseX, mouseY);
+    if (d < 300) {
+      let target = createVector(mouseX, mouseY);
+      let force = p5.Vector.sub(this.pos, target);
+      if (mouseIsPressed) {
+        force = p5.Vector.sub(target, this.pos);
+        force.setMag(0.5);
+      } else {
+        force.setMag(0.15);
+      }
+      this.acc.add(force);
+    }
+  }
 
-    // campo fluido suave
-    let angle =
-      noise(this.pos.x * scale, this.pos.y * scale, t) *
-      TWO_PI *
-      2;
+  separate(others) {
+    let steer = createVector(0, 0);
+    let count = 0;
+    for (let o of others) {
+      let d = dist(this.pos.x, this.pos.y, o.pos.x, o.pos.y);
+      if (d > 0 && d < 180) { 
+        let diff = p5.Vector.sub(this.pos, o.pos);
+        diff.normalize();
+        diff.div(d);
+        steer.add(diff);
+        count++;
+      }
+    }
+    if (count > 0) {
+      steer.div(count);
+      steer.setMag(1.5);
+      this.acc.add(steer);
+    }
+  }
 
-    let force = p5.Vector.fromAngle(angle);
-
-    this.vel.add(force);
-    this.vel.limit(1.5);
+  update(bass) {
+    this.vel.add(this.acc);
+    this.vel.limit(this.maxSpeed + bass * 4); 
     this.pos.add(this.vel);
-
-    // wrap edges
-    if (this.pos.x < 0) this.pos.x = width;
-    if (this.pos.x > width) this.pos.x = 0;
-    if (this.pos.y < 0) this.pos.y = height;
-    if (this.pos.y > height) this.pos.y = 0;
+    this.acc.mult(0);
   }
 
-  show() {
-    stroke(255, 180);
-    strokeWeight(0.6);
-    line(this.prev.x, this.prev.y, this.pos.x, this.pos.y);
+  edges() {
+    if (this.pos.x > width) this.pos.x = 0;
+    if (this.pos.x < 0) this.pos.x = width;
+    if (this.pos.y > height) this.pos.y = 0;
+    if (this.pos.y < 0) this.pos.y = height;
   }
 }
+
+function windowResized() {
+  resizeCanvas(windowWidth, windowHeight);
+  cols = floor(width / scl);
+  rows = floor(height / scl);
+}
+
 ```
+
+Shader.frag
+``` js
+#version 300 es
+// Fragment Shader Final - Glitch & Drag Optimized
+precision highp float;
+
+in vec2 vTexCoord;
+out vec4 outColor;
+uniform vec2 uResolution;
+uniform vec2 uParticles[30];
+uniform float uBass;
+uniform float uTreble;
+uniform vec2 uMouse;
+uniform float uTime;
+uniform float uTransition; 
+uniform float uDensity;
+uniform float uIsGlitching;
+uniform float uMousePressed;
+
+float pattern(vec2 st, float size, float spacing) {
+    return step(spacing, length(fract(st * size) - 0.5));
+}
+float random(vec2 st) {
+    return fract(sin(dot(st.xy, vec2(12.9898,78.233))) * 43758.5453123);
+}
+vec2 kaleidoscope(vec2 st, float segments) {
+    vec2 p = st - 0.5;
+    float r = length(p);
+    float a = atan(p.y, p.x);
+    float tau = 6.283185;
+    a = mod(a, tau/segments);
+    a = abs(a - tau/segments/2.0);
+    return vec2(cos(a), sin(a)) * r + 0.5;
+}
+
+void main() {
+    vec2 st = vTexCoord;
+    
+    // Temblor nervioso de agudos
+    if (uTreble > 0.45) {
+       st.x += (random(vec2(uTime, st.y)) - 0.5) * 0.007 * uTreble;
+    }
+
+    if (uTransition > 2.0) {
+        float kTransition = clamp(uTransition - 2.0, 0.0, 1.0);
+        st = mix(st, kaleidoscope(st, 6.0), kTransition);
+    }
+
+    // Distorsión horizontal de Glitch
+    if(uIsGlitching > 0.5) {
+        st.x += (random(vec2(uTime, st.y)) - 0.5) * 0.12;
+    }
+
+    float sum = 0.0;
+    for (int i = 0; i < 30; i++) {
+        vec2 p = uParticles[i];
+        float d = distance(st, p);
+        sum += (0.0008 * uDensity) / (pow(d, 2.0) + 0.0001);
+    }
+
+    // Interacción Mouse Drag
+    float mRad = 0.15 + (uMousePressed * 0.35);
+    float mStr = 0.15 + (uMousePressed * 0.45);
+    sum += smoothstep(mRad, 0.0, distance(st, uMouse)) * mStr;
+
+    // FASE 1
+    float freq = 45.0 + uBass * 20.0;
+    float p1 = smoothstep(0.0, 0.1, sin(sum * freq - uTime * 1.8)) * smoothstep(0.1, 0.12, sum);
+
+    // FASE 2
+    float p2 = 0.0;
+    if(sum > 0.6) p2 = pattern(st, 180.0, 0.4);
+    else if (sum > 0.3) p2 = (random(st + uTime) > 0.8) ? 1.0 : 0.0;
+    else if (sum > 0.1) p2 = pattern(st, 320.0, 0.05);
+
+    // FASE 3
+    float f3 = 75.0 + uBass * 10.0;
+    float h = sin(sum * f3 - uTime * 0.4);
+    float sh = fwidth(h) * 12.0; 
+    float p3 = step(0.5, h) * (1.0 - sh) * smoothstep(0.05, 0.1, sum) + (step(0.92, h) * 0.4);
+
+    float res = 0.0;
+    if (uTransition <= 1.0) res = mix(p1, p2, clamp(uTransition, 0.0, 1.0));
+    else if (uTransition <= 2.0) res = mix(p2, p3, clamp(uTransition - 1.0, 0.0, 1.0));
+    else res = p2; 
+
+    // Outro desvanecimiento
+    if (uTransition > 3.0) res *= (1.0 - clamp(uTransition - 3.0, 0.0, 1.0));
+
+    // Flash de inversión de color (Glitch feel)
+    if(uIsGlitching > 0.5 && random(vec2(uTime)) > 0.85) {
+        res = 1.0 - res;
+    }
+
+    outColor = vec4(vec3(res), 1.0);
+}
+```
+Shader.vert
+``` js
+#version 300 es
+precision highp float;
+
+in vec3 aPosition;
+in vec2 aTexCoord;
+out vec2 vTexCoord;
+
+void main() {
+  vTexCoord = aTexCoord;
+  vec4 positionVec4 = vec4(aPosition, 1.0);
+  positionVec4.xy = positionVec4.xy * 2.0 - 1.0;
+  gl_Position = positionVec4;
+}
+```
+
+#### Link de la actividad
+https://editor.p5js.org/Jakeline-Avila/sketches/fzgEIbT6H
+
+#### Capturas de pantalla
+
+Fase 1
+<img width="2559" height="1439" alt="Captura de pantalla 2026-04-16 124455" src="https://github.com/user-attachments/assets/f449cd88-555f-42e9-aa53-e2e194d386f4" />
+
+Fase 2
+<img width="2559" height="1439" alt="Captura de pantalla 2026-04-16 124502" src="https://github.com/user-attachments/assets/feab7a4c-9c12-416b-b266-e6dcf6cc9837" />
+
+Fase 3
+<img width="2552" height="1439" alt="Captura de pantalla 2026-04-16 124507" src="https://github.com/user-attachments/assets/1eb162e9-3399-4167-99da-6d77bf0b2fcc" />
+
+Fase 4
+<img width="2559" height="1439" alt="Captura de pantalla 2026-04-16 124517" src="https://github.com/user-attachments/assets/b5643ef5-db20-4920-8e4d-3d8b41c46cd3" />
 
 ## Bitácora de reflexión
