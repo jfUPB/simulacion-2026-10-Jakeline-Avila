@@ -93,7 +93,9 @@ function draw() {
 
 4. Me gustaría explorar los líquidos y los movimientos de arrastre, siempre me ha encantado ver la fluidez de los líquidos.
 
-### Actividad
+### Actividad 3
+
+
 
 ## Bitácora de aplicación 
 
