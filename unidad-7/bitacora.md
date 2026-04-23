@@ -95,6 +95,63 @@ function draw() {
 
 ### Actividad 3
 
+- Ejercicio de amplitud:
+
+``` js
+let song, amp;
+
+function preload() {
+  song = loadSound("mrbrightside.mp3");
+}
+
+function setup() {
+  createCanvas(400, 400);
+  amp = new p5.Amplitude();
+  song.play();
+}
+
+function draw() {
+  background(0);
+
+  let level = amp.getLevel();
+  let size = map(level, 0, 0.5, 50, 300);
+
+  fill(255);
+  ellipse(width/2, height/2, size);
+}
+```
+
+- Uso p5.Amplitude() para obtener el nivel de volumen general en tiempo real. Este valor cambia constantemente y representa la intensidad global de la canción.
+
+- Energía
+
+``` js
+let song, fft;
+
+function preload() {
+  song = loadSound("mrbrightside.mp3");
+}
+
+function setup() {
+  createCanvas(400, 400);
+  fft = new p5.FFT();
+  song.play();
+}
+
+function draw() {
+  let bass = fft.getEnergy("bass");
+
+  if (bass > 180) {
+    background(random(255), random(255), random(255));
+  } else {
+    background(0, 20); // leve rastro
+  }
+}
+```
+- Uso p5.FFT() y getEnergy("bass") para medir la energía en frecuencias bajas (bombo/bajo).
+
+### Actividad 4
+
 
 
 ## Bitácora de aplicación 
