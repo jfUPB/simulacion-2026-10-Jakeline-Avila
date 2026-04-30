@@ -151,7 +151,15 @@ function draw() {
 - Uso p5.FFT() y getEnergy("bass") para medir la energía en frecuencias bajas (bombo/bajo).
 
 ### Actividad 4
-
+<img width="1084" height="920" alt="image" src="https://github.com/user-attachments/assets/d7825dd9-5eef-4d64-bfd7-403c5c67ad95" />
+- He vinculado un cuerpo circular de Matter.js a la palabra "BALL". He creado un sistema de partículas simple para representar el "FIRE".
+- Implementé un vector de fuerza de atracción. La bola no sigue al mouse de forma rígida, sino que es atraída por una fuerza física, lo que permite movimientos curvos y fluidos.
+Relación Audio-Física:
+El bajo expande el radio de la bola visualmente.
+El agudo modifica el shadowBlur (el resplandor) de la tipografía.
+Evaluación de la prueba:
+- Lo que funcionó: La fluidez del movimiento y la integración del brillo con los agudos crean una atmósfera muy inmersiva.
+- A mejorar: Debo ajustar la fricción del aire (frictionAir) porque a veces la bola se mueve demasiado rápido y cuesta ver la palabra con claridad. También planeo hacer que el rastro de fuego sea más denso cuando el volumen suba.
 
 
 ## Bitácora de aplicación 
